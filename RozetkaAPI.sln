@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.33927.289
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RozetkaUI", "RozetkaUI.csproj", "{ED48D259-6877-40B8-9E7E-591A11ECAE71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PozetkaAPI", "PozetkaAPI\PozetkaAPI.csproj", "{D1D4C90B-1853-4EA6-BC56-2B3EF158F4E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RozetkaAPI", "RozetkaAPI\RozetkaAPI.csproj", "{D1D4C90B-1853-4EA6-BC56-2B3EF158F4E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

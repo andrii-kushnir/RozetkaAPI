@@ -1,10 +1,11 @@
-﻿using System;
+﻿using RozetkaAPI.ModelsRozetka;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PozetkaAPI.Models
+namespace RozetkaAPI.Models
 {
     public class OrderStatusesResponse
     {
@@ -15,7 +16,7 @@ namespace PozetkaAPI.Models
     public class ContentOrderStatuses
     {
         public List<OrderStatus> orderStatuses { get; set; }
-        public MetaOrderStatuses _meta { get; set; }
+        public Meta _meta { get; set; }
     }
 
     public class OrderStatus
@@ -28,13 +29,13 @@ namespace PozetkaAPI.Models
         public int status { get; set; }
         public string color { get; set; }
         public string title { get; set; }
+        public List<StatusAvailable> status_available { get; set; }
     }
 
-    public class MetaOrderStatuses
+    public class StatusAvailable
     {
-        public int totalCount { get; set; }
-        public int pageCount { get; set; }
-        public int currentPage { get; set; }
-        public int perPage { get; set; }
+        public int parent_id { get; set; }
+        public int child_id { get; set; }
+        public int delivery_type { get; set; }
     }
 }

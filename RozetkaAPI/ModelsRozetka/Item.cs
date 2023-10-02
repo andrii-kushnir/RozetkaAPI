@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PozetkaAPI.ModelsRozetka
+namespace RozetkaAPI.ModelsRozetka
 {
     public class Item
     {
@@ -25,12 +25,11 @@ namespace PozetkaAPI.ModelsRozetka
         public string photo_preview { get; set; }
         public string[] photo { get; set; }
         public int moderation_status { get; set; }
-        public int sla_id { get; set; }
-        public int sla_rz_id { get; set; }
         public string url { get; set; }
         public int sold { get; set; }
         public string uploader_offer_id { get; set; }
         public int uploader_status { get; set; }
-        public object details { get; set; }
+        public int sla_id { get; set; }
+        public int sla_rz_id { get; set; }
     }
 }

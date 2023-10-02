@@ -1,11 +1,11 @@
-﻿using PozetkaAPI.ModelsRozetka;
+﻿using RozetkaAPI.ModelsRozetka;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PozetkaAPI.Models
+namespace RozetkaAPI.Models
 {
     public class ProductResponse
     {
@@ -16,14 +16,6 @@ namespace PozetkaAPI.Models
     public class ContentProduct
     {
         public List<Item> items { get; set; }
-        public MetaProduct _meta { get; set; }
-    }
-
-    public class MetaProduct
-    {
-        public int totalCount { get; set; }
-        public int pageCount { get; set; }
-        public int currentPage { get; set; }
-        public int perPage { get; set; }
+        public Meta _meta { get; set; }
     }
 }
