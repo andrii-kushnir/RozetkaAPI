@@ -63,9 +63,9 @@ namespace RozetkaUI
 
         private void button5_Click(object sender, EventArgs e)
         {
-            var statuses = ApiManager.Current.GetOrderStatus()?.content.orderStatuses.OrderBy(s => s.id).ToList();
+            var statuses = ApiManager.Current.GetOrderStatus(Convert.ToInt32(_tbStatus.Text))?.content.orderStatuses.OrderBy(s => s.id).ToList();
             label5.Text = "Всього: " + statuses.Count;
-            _dgvOrders.DataSource = statuses;
+            _dgvStatuses.DataSource = statuses;
         }
 
         private void _btOrders_Click(object sender, EventArgs e)
@@ -119,6 +119,15 @@ namespace RozetkaUI
             {
                 var order = ApiManager.Current.ChangeStatus(Convert.ToInt32(_tbId.Text), _cbOrderStatus.SelectedIndex);
             }
+        }
+
+        private void _bSendTTN_Click(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrWhiteSpace(_tbTTN.Text))
+                if (MessageBox.Show("Ви реально хочете послати номет NNY на ROZETKA.UA? Статус замовлення зміниться на 3(Комплектується. Дані підтверджені)", "Посилання TTN", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    var result = ApiManager.Current.ChangeStatus(Convert.ToInt32(_tbId.Text), 0, _tbTTN.Text.Trim());
+                }
         }
     }
 }

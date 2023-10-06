@@ -19,7 +19,6 @@ namespace RozetkaAPI
 
 		private static string _username = "shop@ars.ua";
 		private static string _password64 = "Nkp2bXg1QlI3bjZW";
-		private static string _password = "6Jvmx5BR7n6V";
 
 		private static readonly string _sql_database = "";
 
@@ -32,10 +31,6 @@ namespace RozetkaAPI
 		{
 			if (Current == null)
 				Current = this;
-
-			//var login = Login(_username, _password);
-			//if (login != null && login.success)
-			//    _token = login.content.access_token;
 		}
 
 		public LoginResponse Login()
@@ -103,7 +98,7 @@ namespace RozetkaAPI
         //	return result;
         //}
 
-        public OrderStatusesResponse GetOrderStatus()
+        public OrderStatusesResponse GetOrderStatus(int status = 0)
         {
             OrderStatusesResponse result = null;
             if (_token == null) return result;
@@ -113,8 +108,10 @@ namespace RozetkaAPI
 
             try
             {
-                response = RequestData.SendGet($"{apiPath}order-statuses/search?id=26&expand=status_available", _token, out error);
-                //response = RequestData.SendGet($"{apiPath}order-statuses/search?&expand=status_available", _token, out error);
+                if (status == 0)
+                    response = RequestData.SendGet($"{apiPath}order-statuses/search?&expand=status_available", _token, out error);
+                 else
+                    response = RequestData.SendGet($"{apiPath}order-statuses/search?id={status}&expand=status_available", _token, out error);
             }
             catch (Exception ex)
             {
@@ -368,14 +365,18 @@ namespace RozetkaAPI
             }
         }
 
-        public bool ChangeStatus(int idOrder, int status)
+        public bool ChangeStatus(int idOrder, int status, string ttn = null)
         {
             bool result = false;
             if (_token == null) return result;
 
             string response = null;
             string error;
-            var json = "{\"status\":" + status.ToString() + "}";
+            string json;
+            if (String.IsNullOrEmpty(ttn))
+                json = "{\"status\":" + status.ToString() + "}";
+            else
+                json = "{\"status\":3, \"ttn\":\"" + ttn.Trim() +  "\"}";
             try
             {
                 response = RequestData.SendPut($"{apiPath}orders/{idOrder}", _token, json, out error);
@@ -408,6 +409,73 @@ namespace RozetkaAPI
                 return;
             }
             var result = response.ConvertJson<OrderChangeResponse>(ref error);
+        }
+
+        public static void SendTTNFromSQL(int idOrder, string ttn, out string error)
+        {
+            error = "";
+            var token = Login(_username, _password64, true);
+
+            if (token?.content.access_token == null) { error = "Не згенерувався токен"; return; }
+
+            string response = null;
+            var json = "{\"status\":3, \"ttn\":\"" + ttn + "\"}";
+            try
+            {
+                response = RequestData.SendPut($"{apiPath}orders/{idOrder}", token.content.access_token, json, out error);
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message + "  ";
+                return;
+            }
+            var result = response.ConvertJson<OrderChangeResponse>(ref error);
+        }
+
+        public static void GetUnsuccesOrdersToSQL(out string error)
+        {
+            error = "";
+            var token = Login(_username, _password64, true);
+
+            OrderSearchUnsuccesResponse result = null;
+            if (token?.content.access_token == null) { error = "Не згенерувався токен"; return; }
+
+            string response = null;
+            try
+            {
+                response = RequestData.SendGet($"{apiPath}orders/search?expand=order_status_history&types=6&status_updated_from={DateTime.Now.AddDays(-1)}", token.content.access_token, out error);
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message + "  ";
+                return;
+            }
+            result = response.ConvertJson<OrderSearchUnsuccesResponse>(ref error);
+            if (result != null)
+                if (result.content._meta.pageCount >= 2)
+                {
+                    for (int i = 2; i <= result.content._meta.pageCount; i++)
+                    {
+                        var responseNew = RequestData.SendGet($"{apiPath}orders/search?expand=order_status_history&status_updated_from={DateTime.Now.AddDays(-1)}&page={i}&types=6", token.content.access_token, out error);
+                        var resultNew = responseNew.ConvertJson<OrderSearchUnsuccesResponse>(ref error);
+                        result.content.orders.AddRange(resultNew.content.orders);
+                    }
+                }
+
+            using (SqlConnection connection = new SqlConnection("Context Connection = true;"))
+            {
+                connection.Open();
+                foreach (var order in result.content.orders)
+                {
+                    if (order.status_group == 3)
+                    {
+                        var sql = $@"INSERT INTO {_sql_database}[RozetkaUnsuccesOrder] (id, changed, reason) VALUES ({order.id}, '{DateTime.Parse(order.order_status_history[0].created).DateToSQL()}', '{order.order_status_history[0].status.name_uk}')";
+                        using (var query = new SqlCommand(sql, connection))
+                            query.ExecuteNonQuery();
+                    }
+                }
+                connection.Close();
+            }
         }
 
     }

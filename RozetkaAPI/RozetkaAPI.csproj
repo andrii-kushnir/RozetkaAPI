@@ -68,6 +68,7 @@
     <Compile Include="Models\OrdersSearchExpandResponse.cs" />
     <Compile Include="Models\OrdersSearchResponse.cs" />
     <Compile Include="Models\OrderStatusesResponse.cs" />
+    <Compile Include="Models\OrderSearchUnsuccesResponse.cs" />
     <Compile Include="Models\ProductResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestData.cs" />

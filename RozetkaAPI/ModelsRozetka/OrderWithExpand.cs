@@ -25,4 +25,9 @@ namespace RozetkaAPI.ModelsRozetka
         public bool is_free_delivery { get; set; }
         public bool can_create_invoice { get; set; }
     }
+
+    public class OrderWithStatusHistory : Order
+    {
+        public List<OrderStatusHistory> order_status_history { get; set; }
+    }
 }
