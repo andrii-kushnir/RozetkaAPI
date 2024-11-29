@@ -17,7 +17,7 @@ namespace RozetkaAPI.ModelsRozetka
         public string price { get; set; }
         public int stock_quantity { get; set; }
         public object weight { get; set; }
-        public int commission_percent { get; set; }
+        public int? commission_percent { get; set; }
         public string commission_sum { get; set; }
         public CatalogCategory catalog_category { get; set; }
         public int catalog_id { get; set; }
@@ -28,7 +28,7 @@ namespace RozetkaAPI.ModelsRozetka
         public string url { get; set; }
         public int sold { get; set; }
         public string uploader_offer_id { get; set; }
-        public int uploader_status { get; set; }
+        public int? uploader_status { get; set; }
         public int sla_id { get; set; }
         public int sla_rz_id { get; set; }
     }

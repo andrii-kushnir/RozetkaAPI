@@ -51,6 +51,7 @@
     <Compile Include="ModelsRozetka\ChatMessage.cs" />
     <Compile Include="ModelsRozetka\Delivery.cs" />
     <Compile Include="ModelsRozetka\Item.cs" />
+    <Compile Include="ModelsRozetka\ItemComments.cs" />
     <Compile Include="ModelsRozetka\Meta.cs" />
     <Compile Include="ModelsRozetka\Order.cs" />
     <Compile Include="ModelsRozetka\OrderStatus.cs" />
@@ -59,9 +60,14 @@
     <Compile Include="ModelsRozetka\OrderWithExpand.cs" />
     <Compile Include="ModelsRozetka\Purchase.cs" />
     <Compile Include="ModelsRozetka\User.cs" />
+    <Compile Include="Models\ChatResponse.cs" />
+    <Compile Include="Models\ItemResponse.cs" />
     <Compile Include="Models\LoginRequest.cs" />
     <Compile Include="Models\LoginResponse.cs" />
     <Compile Include="Models\LogoutResponse.cs" />
+    <Compile Include="Models\MessagesCountResponse.cs" />
+    <Compile Include="Models\MessagesItemResponse.cs" />
+    <Compile Include="Models\MessagesOrderResponse.cs" />
     <Compile Include="Models\OrderChangeResponse.cs" />
     <Compile Include="Models\OrderExtraResponse.cs" />
     <Compile Include="Models\OrderResponse.cs" />

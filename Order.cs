@@ -29,7 +29,6 @@ namespace RozetkaUI
 
         private void Order_Load(object sender, EventArgs e)
         {
-
             textBox1.Text = _order.id.ToString();
             textBox3.Text = _order.created;
             textBox4.Text = _order.user_phone;
@@ -40,7 +39,7 @@ namespace RozetkaUI
             if (_order is OrderWithExpand orderExpand)
             {
                 textBox2.Text = orderExpand.user.contact_fio;
-                var city = Regex.Replace(orderExpand.delivery.city.title, @"Селище міського типу", @"смт");
+                var city = orderExpand.delivery.city?.title == null ? "" : Regex.Replace(orderExpand.delivery.city.title, @"Селище міського типу", @"смт");
                 textBox5.Text = $"{city}, {orderExpand.delivery.place_street} {(orderExpand.delivery.place_house ?? "")},{(orderExpand.delivery.place_flat ?? "")}{(orderExpand.delivery.place_number != null ? ", Відділення № " + orderExpand.delivery.place_number : "")}";
                 textBox6.Text = orderExpand.user.has_email && orderExpand.user.email != "true" ? orderExpand.user.email : ""; ;
                 _dgvPurchases.DataSource = orderExpand.purchases;

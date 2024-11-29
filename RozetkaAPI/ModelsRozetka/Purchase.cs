@@ -16,7 +16,7 @@ namespace RozetkaAPI.ModelsRozetka
         public int quantity { get; set; }
         public int item_id { get; set; }
         public string item_name { get; set; }
-        public int kit_id { get; set; }
+        public int? kit_id { get; set; }
         public int status { get; set; }
         public Item item { get; set; }
         public object conf_details { get; set; }

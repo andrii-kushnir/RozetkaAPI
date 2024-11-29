@@ -16,10 +16,18 @@ namespace RozetkaAPI.ModelsRozetka
         public string read_market { get; set; }
         public int trash_market { get; set; }
         public int star_market { get; set; }
-        public int order_id { get; set; }
-        public int type { get; set; }
+        public int? order_id { get; set; }
+        public ChatType type { get; set; }
         public int? item_id { get; set; }
         public int user_id { get; set; }
         public int unread_messages_count { get; set; }
+        public List<ChatMessage> messages { get; set; }
+    }
+
+    public enum ChatType
+    {
+        Order = 0,
+        Item = 1,
+        Seller = 2
     }
 }
