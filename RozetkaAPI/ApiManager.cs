@@ -778,7 +778,7 @@ namespace RozetkaAPI
             Current._token = token.content.access_token;
 
             var orders = new List<OrderWithExpand>();
-            var ordersP = Current.GetOrdersByPay("4524,5307,5405")?.content.orders;
+            var ordersP = Current.GetOrdersByPay("4524,5307,5405")?.content.orders.Where(o => o.status_payment != null && o.status_payment.status_payment_id == 2).ToList();
             if (ordersP != null && ordersP.Count != 0)
                 orders.AddRange(ordersP);
 
@@ -786,7 +786,7 @@ namespace RozetkaAPI
             if (ordersD != null && ordersD.Count != 0)
                 orders.AddRange(ordersD);
 
-            result = orders.Where(o => o.status_payment != null && o.status_payment.status_payment_id == 2).OrderByDescending(o => o.created).Select(n => new OplZam() { nomZam = n.id, sumaOpl = n.amount_with_discount }).ToList().ToXml<List<OplZam>>();
+            result = orders.OrderByDescending(o => o.created).Select(n => new OplZam() { nomZam = n.id, sumaOpl = n.amount_with_discount }).ToList().ToXml<List<OplZam>>();
         }
 
         public struct OplZam

@@ -76,6 +76,7 @@ namespace RozetkaUI
             this._btOrdersForPay = new System.Windows.Forms.Button();
             this._cbPays = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
+            this._btOrdersDeliveryRoz = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this._scMain)).BeginInit();
             this._scMain.Panel1.SuspendLayout();
             this._scMain.Panel2.SuspendLayout();
@@ -207,6 +208,7 @@ namespace RozetkaUI
             // 
             // _scOrders.Panel1
             // 
+            this._scOrders.Panel1.Controls.Add(this._btOrdersDeliveryRoz);
             this._scOrders.Panel1.Controls.Add(this._cbPays);
             this._scOrders.Panel1.Controls.Add(this.label9);
             this._scOrders.Panel1.Controls.Add(this._btOrdersForPay);
@@ -617,6 +619,16 @@ namespace RozetkaUI
             this.label9.TabIndex = 12;
             this.label9.Text = "Оплата:";
             // 
+            // _btOrdersDeliveryRoz
+            // 
+            this._btOrdersDeliveryRoz.Location = new System.Drawing.Point(572, 62);
+            this._btOrdersDeliveryRoz.Name = "_btOrdersDeliveryRoz";
+            this._btOrdersDeliveryRoz.Size = new System.Drawing.Size(193, 50);
+            this._btOrdersDeliveryRoz.TabIndex = 14;
+            this._btOrdersDeliveryRoz.Text = "Замовлення доставка Розетка і оплата після отримання";
+            this._btOrdersDeliveryRoz.UseVisualStyleBackColor = true;
+            this._btOrdersDeliveryRoz.Click += new System.EventHandler(this._btOrdersDeliveryRoz_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -708,6 +720,7 @@ namespace RozetkaUI
         private System.Windows.Forms.Button _btOrdersForPay;
         private System.Windows.Forms.ComboBox _cbPays;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button _btOrdersDeliveryRoz;
     }
 }
 

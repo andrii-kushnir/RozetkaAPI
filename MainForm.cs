@@ -218,13 +218,17 @@ namespace RozetkaUI
             _dgvOrders.DataSource = orders;
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void _btOrdersDeliveryRoz_Click(object sender, EventArgs e)
         {
             var orders = ApiManager.Current.GetOrdersRozDeliveryAndCash()?.content.orders.ToList();
             _orders = orders;
             label5.Text = "Всього: " + orders.Count;
             _dgvOrders.DataSource = orders;
+        }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            ApiManager.GetOrdersForFiskalXml(out string result);
             //var pp = new RoutePoint()
             //{
             //    Point = "sd",
@@ -287,5 +291,6 @@ namespace RozetkaUI
             public string state { get; set; }
             public string postcode { get; set; }
         }
+
     }
 }
