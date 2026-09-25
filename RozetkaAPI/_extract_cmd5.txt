@@ -1,0 +1,4301 @@
+=== _extract_cmd5.txt — executive summary ===
+Source: d:\BuhnetAll\SYSAPPPRJ\Zvit_buh1C\zvit_buh29_1_edit202102.SCT (FileShare.ReadWrite OK)
+
+Q1) Where is T22RXXXXG8 written?
+- Current xmlpart2 for T22 (prkasmetod=0) detail loop writes G311/G312/G32/G4/G5/G6 only — NO RXXXXG7/G8.
+- Active '<T'+key2+'RXXXXG8' emitters:
+  (a) PROCEDURE xmlpart — always (used for LL* tables, not T22)
+  (b) PROCEDURE xmlpart2 — only inside IF prkasmetod>0 (T21 path), from TextRC(i,48)
+  (c) commented * / *!* historical blocks
+- No literal string 'T22RXXXXG8' in SCT. If an export contains T22RXXXXG8, it is not from current xmlpart2 T22 branch.
+
+Q2) Command5.Click (FULL): Excel export only.
+  PUTFILE(...XLS) + F1.write(cFilePath,11) by ActivePage grid. Does NOT call page2toxml/Xmlpart2.
+- XML export is Command6.Click -> page2toxml() (when ActivePage=2) -> Xmlpart2('T21'/'T22').
+
+Q3) T22END marker / fills (during report CALC, not loaddata):
+  T21END: col38=lnSunR4, col43=lnSunR5, col48=lnSunR7 (+ subrows)
+  T22END: col31=lnSunR4, col38=lnSunR5, col46=lnSunR7 (+ subrows on 31/38/46)
+  T22END does NOT write cols 43 or 48.
+  loaddata: header HZY month->col43, names, etc.; does NOT recompute T22END sums.
+  Opening saved report: grid restored from saved .vts/XMLDATA; T22END 43/48 stay whatever was saved (normally blank).
+
+Q4) Empty-tag strip: No STRTRAN(_xml...) post-process found that removes <R022G8></R022G8>.
+  xmlpart uses xsi:nil when EMPTY for its G7/G8. Kushnir block has no EMPTY/nil guard.
+
+Q5) xmlpart2 location: form method source in SCT only (also edit202304.SCT).
+  Not in .prg/.fxp/.vcx. Companion .scx is metadata only (no method body).
+
+VERDICT:
+- Open existing month + press Command5 without recalc: Command5 never touches cols 43/48 and never builds XML. T22END 43/48 remain empty (calc never writes them; only T21END uses 43/48).
+- R022G7/G8 completely absent: Kushnir IF prkasmetod=0 lives in xmlpart2, which runs only via Command6/page2toxml — not Command5. If XML was built without that button (or with unrecompiled methods older than 12/06/2026), tags never appear. Even when Kushnir runs, it reads T22END cols 43/48 which the T22 calc leaves empty (values are in 31/38/46).
+
+=============================================
+
+=== Continued SCT analysis ===
+Source: d:\BuhnetAll\SYSAPPPRJ\Zvit_buh1C\zvit_buh29_1_edit202102.SCT size=424126 ReadShare=OK Generated=2026-07-23T15:03:15.0708556+03:00
+
+===== ALL RXXXXG8 occurrences =====
+Pattern: RXXXXG8
+Hits: 21
+--- #1 @ 64448 'RXXXXG8' ---
+lnNomStr = m.lnNomStr + 1
+*!*						_xml = _xml + '<T11RXXXXG2 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,3) + '</T11RXXXXG2>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG3D ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,19) + '</T11RXXXXG3D>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG41 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,24) + '</T11RXXXXG41>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG42 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,29) + '</T11RXXXXG42>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG6 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,34) + '</T11RXXXXG6>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG7 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,41) + '</T11RXXXXG7>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG8 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,48) + '</T11RXXXXG8>'+ CRLF
+*!*					ENDIF
+*!*				ENDFOR
+*!*				IF m.lnNomStr = 0
+*!*					_xml = _xml + '<T11RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG41 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG42 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				ENDIF
+
+*!*				F1Find = thisfor
+--- #2 @ 64543 'RXXXXG8' ---
+))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,3) + '</T11RXXXXG2>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG3D ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,19) + '</T11RXXXXG3D>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG41 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,24) + '</T11RXXXXG41>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG42 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,29) + '</T11RXXXXG42>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG6 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,34) + '</T11RXXXXG6>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG7 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,41) + '</T11RXXXXG7>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG8 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,48) + '</T11RXXXXG8>'+ CRLF
+*!*					ENDIF
+*!*				ENDFOR
+*!*				IF m.lnNomStr = 0
+*!*					_xml = _xml + '<T11RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG41 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG42 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				ENDIF
+
+*!*				F1Find = thisform.PF.Page5.F1_55.DefineSearch("T101END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				F1F
+--- #3 @ 65072 'RXXXXG8' ---
+XG6 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,34) + '</T11RXXXXG6>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG7 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,41) + '</T11RXXXXG7>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG8 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,48) + '</T11RXXXXG8>'+ CRLF
+*!*					ENDIF
+*!*				ENDFOR
+*!*				IF m.lnNomStr = 0
+*!*					_xml = _xml + '<T11RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG41 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG42 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				ENDIF
+
+*!*				F1Find = thisform.PF.Page5.F1_55.DefineSearch("T101END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				F1Find.FindNext()
+*!*				_xml = _xml + '<R0110G6>' + Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,34) + '</R0110G6>'+ CRLF
+*!*				_xml = _xml + '<R0110G7>' + Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,41) + '</R0110G7>'+ CRLF
+*!*				_xml = _xml + '<R0110G8>' + Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0110G8>'+ CRLF
+*!*			ENDIF
+*!*		ENDIF
+
+*!*	****ТАБЛИЦЯ 2
+*!*		F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*		IF (F1Find.FindNext())
+*!*			IF thisform.PF.Page5.
+--- #4 @ 108255 'RXXXXG8' ---
+idden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+			T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+			F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+			IF (F1Find.FindNext())
+				FOR i = T1Start TO (F1Find.Row - 1)
+				IF LEN(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(i,3)))=0
+						IF i=T1Start
+							_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG4S xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+				EXIT
+				
+				ENDIF 
+					_xml = _xml + '<T'+key2+'RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T'+key2+'RXXXXG2>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG3D ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,17) +'</T'+key2+'RXXXXG3D>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG4S ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,22) +'</T'+key2+'RXXXXG4S>'+ CRLF
+					_pids=thisform.PF.Page5.F1_55.TextRC(i,28)
+					 IF EMPTY(_p
+--- #5 @ 109782 'RXXXXG8' ---
+XG4S>'+ CRLF
+					_pids=thisform.PF.Page5.F1_55.TextRC(i,28)
+					 IF EMPTY(_pids)
+					 xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+CRLF
+					 else
+					_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + IIF(EMPTY(_pids) or ALLTRIM(_pids)='-','0','1') + '</T'+key2+'RXXXXG5>'+ CRLF
+					ENDIF 
+					*_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,28) + '</T'+key2+'RXXXXG5>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,34) + '</T'+key2+'RXXXXG6>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,42) + '</T'+key2+'RXXXXG7>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+				ENDFOR 
+			ENDIF 
+		ELSE	
+			_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG4S xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG8 
+--- #6 @ 109894 'RXXXXG8' ---
+y2+'RXXXXG5 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+CRLF
+					 else
+					_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + IIF(EMPTY(_pids) or ALLTRIM(_pids)='-','0','1') + '</T'+key2+'RXXXXG5>'+ CRLF
+					ENDIF 
+					*_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,28) + '</T'+key2+'RXXXXG5>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,34) + '</T'+key2+'RXXXXG6>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,42) + '</T'+key2+'RXXXXG7>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+				ENDFOR 
+			ENDIF 
+		ELSE	
+			_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG4S xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+		ENDIF		
+		
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch(m.key1end,1,1
+--- #7 @ 110481 'RXXXXG8' ---
+G6>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,42) + '</T'+key2+'RXXXXG7>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+				ENDFOR 
+			ENDIF 
+		ELSE	
+			_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG4S xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+		ENDIF		
+		
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch(m.key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		F1Find.FindNext()
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,34)
+		IF EMPTY (_pids)
+			_pids='0'
+		ENDIF 
+		IF EMPTY (_pids)
+		
+						_xml = _xml + '<R0'+key2+'G6 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G6>' + _pids + '</R0'+key2+'G6>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G7 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G7>' + _pids + '</R0'+key2+'G7>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_5
+--- #8 @ 113428 'RXXXXG8' ---
+y2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod >0
+						_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						
+						
+						ENDIF 
+				EXIT
+				
+				ENDIF 
+				_xml = _xml + '<T'+key2+'RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T'+key2+'RXXXXG2>'+ CRLF
+				IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),1,2)+'</T'+key2+'RXXXXG31>'+  CRLF
+						*	_xml = _xml + '<T'+key2+'RXXXXG32 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + '20'+SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,2)+'</T'+key2+'RXXXXG32>'+  CRLF
+							_xml = _
+--- #9 @ 115246 'RXXXXG8' ---
+e" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+ CRLF
+							*_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+ CRLF
+
+							m.lcG5 = ALLTRIM(Thisform.PF.Page5.F1_55.TextRC(i,31))
+							IF m.lcG5 == ""
+								_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+ CRLF
+							ELSE
+								_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + "1" + '</T'+key2+'RXXXXG5>'+ CRLF
+							ENDIF
+							
+							_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,38) + '</T'+key2+'RXXXXG6>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					
+				ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),1,2)+'</T'+key2+'RXXXXG311>'+  CRLF
+						*	_xml = _xml + '<T'+key2+'RXXXXG312 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' +'20'+ SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,2)+'</T'+key2+'RXXXXG312>'+  CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,4)+'</T'+key2+'RXXXXG312>'+  CRLF
+							_xm
+--- #10 @ 115358 'RXXXXG8' ---
+true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+ CRLF
+
+							m.lcG5 = ALLTRIM(Thisform.PF.Page5.F1_55.TextRC(i,31))
+							IF m.lcG5 == ""
+								_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+ CRLF
+							ELSE
+								_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + "1" + '</T'+key2+'RXXXXG5>'+ CRLF
+							ENDIF
+							
+							_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,38) + '</T'+key2+'RXXXXG6>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					
+				ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),1,2)+'</T'+key2+'RXXXXG311>'+  CRLF
+						*	_xml = _xml + '<T'+key2+'RXXXXG312 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' +'20'+ SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,2)+'</T'+key2+'RXXXXG312>'+  CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,4)+'</T'+key2+'RXXXXG312>'+  CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.Text
+--- #11 @ 117425 'RXXXXG8' ---
+orm.PF.Page5.F1_55.TextRC(i,46) + '</T'+key2+'RXXXXG6>'+ CRLF
+							
+						
+				ENDIF 
+					
+					*_xml = _xml + '<T'+key2+'RXXXXG4 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x1) + '</T'+key2+'RXXXXG4>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">'
+					*_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x2) + '</T'+key2+'RXXXXG5>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x3) + '</T'+key2+'RXXXXG6>'+ CRLF
+					*IF prkasmetod >0
+					*_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*ENDIF 
+				ENDFOR 
+			ENDIF 
+		ELSE	
+						IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						_xml = _xml + '<T'+key2+'RXX
+--- #12 @ 117537 'RXXXXG8' ---
+_xml + '<T'+key2+'RXXXXG4 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x1) + '</T'+key2+'RXXXXG4>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">'
+					*_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x2) + '</T'+key2+'RXXXXG5>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x3) + '</T'+key2+'RXXXXG6>'+ CRLF
+					*IF prkasmetod >0
+					*_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*ENDIF 
+				ENDFOR 
+			ENDIF 
+		ELSE	
+						IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CR
+--- #13 @ 118453 'RXXXXG8' ---
+
+					*ENDIF 
+				ENDFOR 
+			ENDIF 
+		ELSE	
+						IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod >0
+						_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+		ENDIF		
+		
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		F1Find.FindNext()
+		bukva1='G'+STR(4+IIF(prkasmetod>0,2,0),1)
+		bukva2='G'+STR(5+IIF(prkasmetod>0,2,0),1)
+		bukva3='G'+STR(6+IIF(prkasmetod>0,2,0),1)
+		x1=IIF(prkasmetod>0,38,31)
+		x2=IIF(prkasmetod>0,43,38)
+		x3=IIF(prkasmetod>0,48,46)
+	
+		_xml = _xml + '<R0'+key2+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x1) + '</R0'+key2+bukva1+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x2) + '</R0'+key2+bukva2+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva3+'>' + thisform
+--- #14 @ 222867 'RXXXXG8' ---
+ECLAR>чэюTчьы1918эюTчьчCчш
+ы0эюTчьчыJ02эюTчьчы993эюTчьчCы6шы0эюTчьчы1эюTчьчы00эюTчьчы0000001эюTчьчы1эю&TчьчCCш	ш+ффффцэю&TчьчCCш	шффффцэюTчьчы1918эюTчьчы.xmlэю%ьCчЎ
+рCчЎ
+	эщюьCчыc:\opz\xml\чкЛэю9ьCыЗгенеровано файл: c:\opz\xml\чш@ыУвага!кxэююU_XML	_FILENAMECRLFTIND_FILL
+LNREC_YEARF1FINDTHISFORMPFPAGE4F1_4DEFINESEARCHMAXROWFINDNEXT_ROWROWTEXTRCH_FILL	ROWHIDDENT1STARTIPAGE1F1_1ЇччюччччюTчьCш Cш
+ эюTхчьчыENDэюTчьыэю<TчьCчшшш1ффф	ф
+чш4шффф	ф
+цэю%ьCфцэщэюC%ьCфчффф	ф
+цс CCфчшффф	ф
+цgшэщґю5TчьфчCCфчффф	ф
+цтшуш6эю<TчьCчшшш1ффф	ф
+чш4шффф	ф
+цэю%ьCфцэщючьчэ(ьфчшэщю)%ьCCCчшффф	ф
+ц>шэщю%ьччэщюBTчьчы<Tчы#RXXXXG2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</TчыRXXXXG2>чэю~Tчьчы<TчыRXXXXG3D ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG3D>чэю~Tчьчы<TчыRXXXXG4S ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG4S>чэю!TчьCчшффф	ф
+цэю%ьCчЎэщю]Tчьчы<TчыRXXXXG5 xsi:nil="true" ROWNUM="Cчшффф	ф
+цы"/>чэющ4юTчьчы<TчыRXXXXG5 ROWNUM="Cчшффф	ф
+цы">CCчЎсCчы-ты0уы16ы</TчыRXXXXG5>чэюю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффф	ф
+цы">Cчш"ффф	ф
+цы</TчыRXXXXG6>чэю|Tчьчы<TчыRXXXXG7 ROWNUM="Cчшффф	ф
+цы">Cчш*ффф	ф
+цы</TчыRXXXXG7>чэю|Tчьчы<TчыRXXXXG8 ROWNUM="Cчшффф	ф
+цы">Cчш0ффф	ф
+цы</TчыRXXXXG8>чэююющЊ	юBTчьчы<Tчы#RXXXXG2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>ч
+--- #15 @ 223414 'RXXXXG8' ---
+Cфцэщючьчэ(ьфчшэщю)%ьCCCчшффф	ф
+ц>шэщю%ьччэщюBTчьчы<Tчы#RXXXXG2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</TчыRXXXXG2>чэю~Tчьчы<TчыRXXXXG3D ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG3D>чэю~Tчьчы<TчыRXXXXG4S ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG4S>чэю!TчьCчшффф	ф
+цэю%ьCчЎэщю]Tчьчы<TчыRXXXXG5 xsi:nil="true" ROWNUM="Cчшффф	ф
+цы"/>чэющ4юTчьчы<TчыRXXXXG5 ROWNUM="Cчшффф	ф
+цы">CCчЎсCчы-ты0уы16ы</TчыRXXXXG5>чэюю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффф	ф
+цы">Cчш"ффф	ф
+цы</TчыRXXXXG6>чэю|Tчьчы<TчыRXXXXG7 ROWNUM="Cчшффф	ф
+цы">Cчш*ффф	ф
+цы</TчыRXXXXG7>чэю|Tчьчы<TчыRXXXXG8 ROWNUM="Cчшффф	ф
+цы">Cчш0ффф	ф
+цы</TчыRXXXXG8>чэююющЊ	юBTчьчы<Tчы#RXXXXG2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю>TчьCхчшшш1ффф	ф
+чш4шффф	ф
+цэюьCфцэю#TчьCфчш"ффф	ф
+цэю%ьCчЎэщ
+юTчьы0эюю%ьCчЎэщa
+ю3Tчьчы<R0чыG6 xsi:nil="true"/>чэющЈ
+ю:Tчьчы<R0чыG6>чы</R0чыG6>чэюю#TчьCфчш*ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG7 xsi:nil="true"/>чэющNю:Tчьчы<R0чыG7>чы</R0чыG7>чэюю#TчьCфчш0ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG8 xsi:nil="true"/>ч
+--- #16 @ 223460 'RXXXXG8' ---
+BTчьчы<Tчы#RXXXXG2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</TчыRXXXXG2>чэю~Tчьчы<TчыRXXXXG3D ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG3D>чэю~Tчьчы<TчыRXXXXG4S ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG4S>чэю!TчьCчшффф	ф
+цэю%ьCчЎэщю]Tчьчы<TчыRXXXXG5 xsi:nil="true" ROWNUM="Cчшффф	ф
+цы"/>чэющ4юTчьчы<TчыRXXXXG5 ROWNUM="Cчшффф	ф
+цы">CCчЎсCчы-ты0уы16ы</TчыRXXXXG5>чэюю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффф	ф
+цы">Cчш"ффф	ф
+цы</TчыRXXXXG6>чэю|Tчьчы<TчыRXXXXG7 ROWNUM="Cчшффф	ф
+цы">Cчш*ффф	ф
+цы</TчыRXXXXG7>чэю|Tчьчы<TчыRXXXXG8 ROWNUM="Cчшффф	ф
+цы">Cчш0ффф	ф
+цы</TчыRXXXXG8>чэююющЊ	юBTчьчы<Tчы#RXXXXG2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю>TчьCхчшшш1ффф	ф
+чш4шффф	ф
+цэюьCфцэю#TчьCфчш"ффф	ф
+цэю%ьCчЎэщ
+юTчьы0эюю%ьCчЎэщa
+ю3Tчьчы<R0чыG6 xsi:nil="true"/>чэющЈ
+ю:Tчьчы<R0чыG6>чы</R0чыG6>чэюю#TчьCфчш*ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG7 xsi:nil="true"/>чэющNю:Tчьчы<R0чыG7>чы</R0чыG7>чэюю#TчьCфчш0ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG8 xsi:nil="true"/>чэющщю:Tчьчы<R0чыG8>чы</R0чыG8>чэююю	BьчэюUKEY1
+--- #17 @ 223784 'RXXXXG8' ---
+true" ROWNUM="1"/>чэюю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</TчыRXXXXG2>чэю~Tчьчы<TчыRXXXXG3D ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG3D>чэю~Tчьчы<TчыRXXXXG4S ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG4S>чэю!TчьCчшффф	ф
+цэю%ьCчЎэщю]Tчьчы<TчыRXXXXG5 xsi:nil="true" ROWNUM="Cчшффф	ф
+цы"/>чэющ4юTчьчы<TчыRXXXXG5 ROWNUM="Cчшффф	ф
+цы">CCчЎсCчы-ты0уы16ы</TчыRXXXXG5>чэюю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффф	ф
+цы">Cчш"ффф	ф
+цы</TчыRXXXXG6>чэю|Tчьчы<TчыRXXXXG7 ROWNUM="Cчшффф	ф
+цы">Cчш*ффф	ф
+цы</TчыRXXXXG7>чэю|Tчьчы<TчыRXXXXG8 ROWNUM="Cчшффф	ф
+цы">Cчш0ффф	ф
+цы</TчыRXXXXG8>чэююющЊ	юBTчьчы<Tчы#RXXXXG2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю>TчьCхчшшш1ффф	ф
+чш4шффф	ф
+цэюьCфцэю#TчьCфчш"ффф	ф
+цэю%ьCчЎэщ
+юTчьы0эюю%ьCчЎэщa
+ю3Tчьчы<R0чыG6 xsi:nil="true"/>чэющЈ
+ю:Tчьчы<R0чыG6>чы</R0чыG6>чэюю#TчьCфчш*ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG7 xsi:nil="true"/>чэющNю:Tчьчы<R0чыG7>чы</R0чыG7>чэюю#TчьCфчш0ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG8 xsi:nil="true"/>чэющщю:Tчьчы<R0чыG8>чы</R0чыG8>чэююю	BьчэюUKEY1KEY2KEY1END_XMLCRLF_PIDSF1FINDTHISFORMPFPAGE5F1_55DEFINESEARCHMAXROWFINDNEXT	ROWHIDDENROWTEXTRCT1STARTIXMLCЇччючччюччччч	юTчьCш Cш
+ эюTхчьчыENDэюTчьыэю%ьчыT21эщѕюTчьшэюTчьш&эюTчьш+эюTчьш0эюTч	ьшэющюTчьшэюTчьшэюTчьш&эюTчьш.эюTч	ьшэюю<Tч
+ьCчшшш1ффффчш4шффффцэю%ьCф
+цэщ3юC%ьCф
+чффффцс CCф
+чшффффцgшэщю5Tчьф
+чC
+--- #18 @ 225117 'RXXXXG8' ---
+DEFINESEARCHMAXROWFINDNEXT	ROWHIDDENROWTEXTRCT1STARTIXMLCЇччючччюччччч	юTчьCш Cш
+ эюTхчьчыENDэюTчьыэю%ьчыT21эщѕюTчьшэюTчьш&эюTчьш+эюTчьш0эюTч	ьшэющюTчьшэюTчьшэюTчьш&эюTчьш.эюTч	ьшэюю<Tч
+ьCчшшш1ффффчш4шффффцэю%ьCф
+цэщ3юC%ьCф
+чффффцс CCф
+чшффффцgшэщю5Tчьф
+чCCф
+чффффцтшуш6эю<Tч
+ьCчшшш1ффффчш4шффффцэю%ьCф
+цэщючьчэ(ьф
+чшэщю)%ьCCCчшффффц>шэщЏю%ьччэщюBTчьчы<Tчы#RXXXXG2 xsi:nil="true" ROWNUM="1"/>чэю%ьч	шэщQюCTчьчы<Tчы$RXXXXG31 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG32 xsi:nil="true" ROWNUM="1"/>чэющ$юDTчьчы<Tчы%RXXXXG311 xsi:nil="true" ROWNUM="1"/>чэюDTчьчы<Tчы%RXXXXG312 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG32 xsi:nil="true" ROWNUM="1"/>чэююBTчьчы<Tчы#RXXXXG4 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэю%ьч	шэщѓюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэююю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффффцы">Cчшффффцы</TчыRXXXXG2>чэю%ьч	шэщ
+юTчьчы<TчыRXXXXG31 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы	RXXXXG31>чэюTчьчы<TчыRXXXXG32 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы	RXXXXG32>чэю]Tчьчы<TчыRXXXXG4 xsi:nil="true" ROWNUM="Cчшффффцы"/>чэю%TхчьCCчшффффцэю%ьхчЩэщю]Tчьчы<TчыRXXXXG5 xsi:nil="true" ROWNUM="Cчшффффцы"/>чэющЏюiTчьчы<TчыRXXXXG5 ROWNUM="Cчшффффцы">Щ1ы</TчыRXXXXG5>чэюю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффффцы">Cчш&ффффцы</TчыRXXXXG6>чэю|Tчьчы<TчыRXXXXG7 ROWNUM="Cчшффффцы">Cчш+ффффцы</TчыRXXXXG7>чэю|Tчьчы<TчыRXXXXG8 ROWNUM="Cчшффффцы">Cчш0ффффцы</TчыRXXXXG8>чэющюTчьчы<TчыRXXXXG311 ROWNUM="Cчшффффцы">CCчшффффцшш
+--- #19 @ 225715 'RXXXXG8' ---
+G312 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG32 xsi:nil="true" ROWNUM="1"/>чэююBTчьчы<Tчы#RXXXXG4 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэю%ьч	шэщѓюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэююю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффффцы">Cчшффффцы</TчыRXXXXG2>чэю%ьч	шэщ
+юTчьчы<TчыRXXXXG31 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы	RXXXXG31>чэюTчьчы<TчыRXXXXG32 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы	RXXXXG32>чэю]Tчьчы<TчыRXXXXG4 xsi:nil="true" ROWNUM="Cчшффффцы"/>чэю%TхчьCCчшффффцэю%ьхчЩэщю]Tчьчы<TчыRXXXXG5 xsi:nil="true" ROWNUM="Cчшффффцы"/>чэющЏюiTчьчы<TчыRXXXXG5 ROWNUM="Cчшффффцы">Щ1ы</TчыRXXXXG5>чэюю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффффцы">Cчш&ффффцы</TчыRXXXXG6>чэю|Tчьчы<TчыRXXXXG7 ROWNUM="Cчшффффцы">Cчш+ффффцы</TчыRXXXXG7>чэю|Tчьчы<TчыRXXXXG8 ROWNUM="Cчшффффцы">Cчш0ффффцы</TчыRXXXXG8>чэющюTчьчы<TчыRXXXXG311 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы
+RXXXXG311>чэюTчьчы<TчыRXXXXG312 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы
+RXXXXG312>чэю~Tчьчы<TчыRXXXXG32 ROWNUM="Cчшффффцы">Cчшффффцы</Tчы	RXXXXG32>чэю|Tчьчы<TчыRXXXXG4 ROWNUM="Cчшффффцы">Cчшффффцы</TчыRXXXXG4>чэю|Tчьчы<TчыRXXXXG5 ROWNUM="Cчшффффцы">Cчш&ффффцы</TчыRXXXXG5>чэю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффффцы">Cчш.ффффцы</TчыRXXXXG6>чэюююющтю%ьч	шэщјюCTчьчы<Tчы$RXXXXG31 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG32 xsi:nil="true" ROWNUM="1"/>чэющЏюDTчьчы<Tчы%RXXXXG311 xsi:nil="true" ROWNUM="1"/>чэюDTчьчы<Tчы%RXXXXG312 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG32 xsi
+--- #20 @ 225759 'RXXXXG8' ---
+ы$RXXXXG32 xsi:nil="true" ROWNUM="1"/>чэююBTчьчы<Tчы#RXXXXG4 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэю%ьч	шэщѓюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэююю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффффцы">Cчшффффцы</TчыRXXXXG2>чэю%ьч	шэщ
+юTчьчы<TчыRXXXXG31 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы	RXXXXG31>чэюTчьчы<TчыRXXXXG32 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы	RXXXXG32>чэю]Tчьчы<TчыRXXXXG4 xsi:nil="true" ROWNUM="Cчшффффцы"/>чэю%TхчьCCчшффффцэю%ьхчЩэщю]Tчьчы<TчыRXXXXG5 xsi:nil="true" ROWNUM="Cчшффффцы"/>чэющЏюiTчьчы<TчыRXXXXG5 ROWNUM="Cчшффффцы">Щ1ы</TчыRXXXXG5>чэюю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффффцы">Cчш&ффффцы</TчыRXXXXG6>чэю|Tчьчы<TчыRXXXXG7 ROWNUM="Cчшффффцы">Cчш+ффффцы</TчыRXXXXG7>чэю|Tчьчы<TчыRXXXXG8 ROWNUM="Cчшффффцы">Cчш0ффффцы</TчыRXXXXG8>чэющюTчьчы<TчыRXXXXG311 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы
+RXXXXG311>чэюTчьчы<TчыRXXXXG312 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы
+RXXXXG312>чэю~Tчьчы<TчыRXXXXG32 ROWNUM="Cчшффффцы">Cчшффффцы</Tчы	RXXXXG32>чэю|Tчьчы<TчыRXXXXG4 ROWNUM="Cчшффффцы">Cчшффффцы</TчыRXXXXG4>чэю|Tчьчы<TчыRXXXXG5 ROWNUM="Cчшффффцы">Cчш&ффффцы</TчыRXXXXG5>чэю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффффцы">Cчш.ффффцы</TчыRXXXXG6>чэюююющтю%ьч	шэщјюCTчьчы<Tчы$RXXXXG31 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG32 xsi:nil="true" ROWNUM="1"/>чэющЏюDTчьчы<Tчы%RXXXXG311 xsi:nil="true" ROWNUM="1"/>чэюDTчьчы<Tчы%RXXXXG312 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG32 xsi:nil="true" ROWNUM="1"/>чэююBTчьчы<Tчы#RXXXX
+--- #21 @ 226666 'RXXXXG8' ---
+>чэющюTчьчы<TчыRXXXXG311 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы
+RXXXXG311>чэюTчьчы<TчыRXXXXG312 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы
+RXXXXG312>чэю~Tчьчы<TчыRXXXXG32 ROWNUM="Cчшффффцы">Cчшффффцы</Tчы	RXXXXG32>чэю|Tчьчы<TчыRXXXXG4 ROWNUM="Cчшффффцы">Cчшффффцы</TчыRXXXXG4>чэю|Tчьчы<TчыRXXXXG5 ROWNUM="Cчшффффцы">Cчш&ффффцы</TчыRXXXXG5>чэю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффффцы">Cчш.ффффцы</TчыRXXXXG6>чэюююющтю%ьч	шэщјюCTчьчы<Tчы$RXXXXG31 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG32 xsi:nil="true" ROWNUM="1"/>чэющЏюDTчьчы<Tчы%RXXXXG311 xsi:nil="true" ROWNUM="1"/>чэюDTчьчы<Tчы%RXXXXG312 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG32 xsi:nil="true" ROWNUM="1"/>чэююBTчьчы<Tчы#RXXXXG4 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэю%ьч	шэщоюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэююю<Tч
+ьCчшшш1ффффчш4шффффцэюьCф
+цэю-TчьыGCшCч	штшуш6шZэю-TчьыGCшCч	штшуш6шZэю-TчьыGCшCч	штшуш6шZэюTчьCч	штш&уш6эюTчьCч	штш+уш&6эюTчьCч	штш0уш.6эюUTчьчы<R0ччы>Cф
+ччффффцы</R0ччы>чэюUTчьчы<R0ччы>Cф
+ччффффцы</R0ччы>чэюUTчьчы<R0ччы>Cф
+ччффффцы</R0ччы>чэю%ьч	шэщУюPTчьчы<R0чыG7>Cф
+чш+ффффцы</R0чыG7>чэюPTчьчы<R0чыG8>Cф
+чш0ффффцы</R0чыG8>чэюючьшэ(ьшэщ/юkTчьчы<R0чCчшZчы>Cф
+чччффффцы</R0чCчшZчы>чэюkTчьчы<R0чCчшZчы>Cф
+чччффффцы</R0чCчшZчы>чэюkTчьчы<R0чCчшZчы>Cф
+чччффффцы</R0чCчшZчы>чэююю	BьчэюUKEY1KEY2KEY1END_XMLCRLFX1X2X3X4
+PRKASMETODF1FINDTHISFORMPFPAGE5F1_55DEFINESEARCHMAXROWFINDNEXT	ROWHIDDENROWTEXTRCT1STARTILCG5BUKVA1BUKVA2BUKVA3ЇччюHщщююUNKEYCODENSHIFTA
+
+===== key2 + G8 concatenations =====
+Pattern: key2\+'G8|key2\+"G8|R0'\+key2\+'G8|'G8>'|"G8>
+Hits: 7
+--- #1 @ 111255 'R0'+key2+'G8' ---
+dNext()
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,34)
+		IF EMPTY (_pids)
+			_pids='0'
+		ENDIF 
+		IF EMPTY (_pids)
+		
+						_xml = _xml + '<R0'+key2+'G6 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G6>' + _pids + '</R0'+key2+'G6>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G7 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G7>' + _pids + '</R0'+key2+'G7>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G8 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G8>' + _pids + '</R0'+key2+'G8>'+ CRLF
+		ENDIF 
+
+			
+	*	_xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42) + '</R0'+key2+'G7>'+ CRLF
+	*	_xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+		
+*
+ENDIF
+RETURN _xml 
+
+ENDPROC
+PROCEDURE xmlpart2
+LP
+--- #2 @ 111321 'R0'+key2+'G8' ---
+IF EMPTY (_pids)
+			_pids='0'
+		ENDIF 
+		IF EMPTY (_pids)
+		
+						_xml = _xml + '<R0'+key2+'G6 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G6>' + _pids + '</R0'+key2+'G6>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G7 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G7>' + _pids + '</R0'+key2+'G7>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G8 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G8>' + _pids + '</R0'+key2+'G8>'+ CRLF
+		ENDIF 
+
+			
+	*	_xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42) + '</R0'+key2+'G7>'+ CRLF
+	*	_xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+		
+*
+ENDIF
+RETURN _xml 
+
+ENDPROC
+PROCEDURE xmlpart2
+LPARAMETERS key1,key2
+LOCAL key1end,_xml,CRLF
+LOCAL x1,x2,x3,x4,pr
+--- #3 @ 111349 'R0'+key2+'G8' ---
+0'
+		ENDIF 
+		IF EMPTY (_pids)
+		
+						_xml = _xml + '<R0'+key2+'G6 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G6>' + _pids + '</R0'+key2+'G6>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G7 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G7>' + _pids + '</R0'+key2+'G7>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G8 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G8>' + _pids + '</R0'+key2+'G8>'+ CRLF
+		ENDIF 
+
+			
+	*	_xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42) + '</R0'+key2+'G7>'+ CRLF
+	*	_xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+		
+*
+ENDIF
+RETURN _xml 
+
+ENDPROC
+PROCEDURE xmlpart2
+LPARAMETERS key1,key2
+LOCAL key1end,_xml,CRLF
+LOCAL x1,x2,x3,x4,prkasmetod
+
+CRLF = Chr(13)+C
+--- #4 @ 111516 'R0'+key2+'G8' ---
+'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G7 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G7>' + _pids + '</R0'+key2+'G7>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G8 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G8>' + _pids + '</R0'+key2+'G8>'+ CRLF
+		ENDIF 
+
+			
+	*	_xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42) + '</R0'+key2+'G7>'+ CRLF
+	*	_xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+		
+*
+ENDIF
+RETURN _xml 
+
+ENDPROC
+PROCEDURE xmlpart2
+LPARAMETERS key1,key2
+LOCAL key1end,_xml,CRLF
+LOCAL x1,x2,x3,x4,prkasmetod
+
+CRLF = Chr(13)+Chr(10) 
+m.key1end=key1+'END'
+_xml=''
+IF key1='T21'
+		x1=31
+		x2=38
+		x3=43
+		x4=48
+		prkasmetod=26
+ELSE
+		x1=26
+		x2=31
+		x3=38
+		x4=46
+		prkasmetod=0
+E
+--- #5 @ 111584 'R0'+key2+'G8' ---
+,42)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G7 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G7>' + _pids + '</R0'+key2+'G7>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G8 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G8>' + _pids + '</R0'+key2+'G8>'+ CRLF
+		ENDIF 
+
+			
+	*	_xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42) + '</R0'+key2+'G7>'+ CRLF
+	*	_xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+		
+*
+ENDIF
+RETURN _xml 
+
+ENDPROC
+PROCEDURE xmlpart2
+LPARAMETERS key1,key2
+LOCAL key1end,_xml,CRLF
+LOCAL x1,x2,x3,x4,prkasmetod
+
+CRLF = Chr(13)+Chr(10) 
+m.key1end=key1+'END'
+_xml=''
+IF key1='T21'
+		x1=31
+		x2=38
+		x3=43
+		x4=48
+		prkasmetod=26
+ELSE
+		x1=26
+		x2=31
+		x3=38
+		x4=46
+		prkasmetod=0
+ENDIF 
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1,1,1,49,t
+--- #6 @ 119428 'R0'+key2+'G8' ---
+etod>0,43,38)
+		x3=IIF(prkasmetod>0,48,46)
+	
+		_xml = _xml + '<R0'+key2+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x1) + '</R0'+key2+bukva1+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x2) + '</R0'+key2+bukva2+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva3+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x3) + '</R0'+key2+bukva3+'>'+ CRLF
+		
+		*Додано ШІ(А Кушнір) 12/06/2026
+				IF prkasmetod=0
+				    _xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) + '</R0'+key2+'G7>'+ CRLF
+				    _xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+				ENDIF
+				
+				*Змінено(закоментовано) ШІ(А Кушнір) 12/06/2026
+				FOR I=1 TO 3
+					_xml = _xml + '<R0'+key2+STR(I,1)+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x1) + '</R0'+key2+STR(I,1)+bukva1+'>'+ CRLF
+					_xml = _xml + '<R0'+key2+STR(I,1)+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row
+--- #7 @ 119496 'R0'+key2+'G8' ---
+'+key2+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x1) + '</R0'+key2+bukva1+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x2) + '</R0'+key2+bukva2+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva3+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x3) + '</R0'+key2+bukva3+'>'+ CRLF
+		
+		*Додано ШІ(А Кушнір) 12/06/2026
+				IF prkasmetod=0
+				    _xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) + '</R0'+key2+'G7>'+ CRLF
+				    _xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+				ENDIF
+				
+				*Змінено(закоментовано) ШІ(А Кушнір) 12/06/2026
+				FOR I=1 TO 3
+					_xml = _xml + '<R0'+key2+STR(I,1)+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x1) + '</R0'+key2+STR(I,1)+bukva1+'>'+ CRLF
+					_xml = _xml + '<R0'+key2+STR(I,1)+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x2) + '</R0'+key2+STR(I,1)+bukva2+'>'+ CRLF
+					*IF i=1
+					_
+
+===== T22RXXXXG8 literal =====
+Pattern: T22RXXXXG8
+Hits: 0
+
+===== Xmlpart2 / xmlpart with G8 near T22 =====
+Pattern: T22.{0,200}G8|G8.{0,200}T22
+Hits: 1
+--- #1 @ 187307 'T22ѕFѓ2fff11111ffffffffQѕя`ѓSяќ J#AL>3> 70 72VB=89 (?>40B:>289) ?5@V>4 (@O4>: 14' ---
+=5>1>@>B=8E 0:B82V2***ѕv5556))))))*555555555556effffff111111111111ffffffffQѕя`SяѕЄЂ)*)))))))))))))))*)))))))7)))*))))))*555555555556effffff11111ffffffffQѕя`ЂSяѕЄЃ+,+++++++++++++++,+++++++0+++,++++++,ZZZZZZZZZZZXeffffff11111ffffffffQѕя`ЃSя
+>1[
++2ѕ$++++++++++++++,)3.1ѕ)))))*)3.2ѕ))))
+04ѕ+++++,$
+%+5ѕ&+++++++,
+-06ѕN.+++ffffff11111ffffffffQѕя`Sя
+ѓ>1ѕfѓ[>>>>>>>>>>>>>>>[\\\\\\a\\\\a]]]]]]^]]]]]]]^]]]]0ѓ1T22ѕFѓ2fff11111ffffffffQѕя`ѓSяќ J#AL>3> 70 72VB=89 (?>40B:>289) ?5@V>4 (@O4>: 14 45:;0@0FVW), C B><C G8A;V:ѕf                 \\\\\\\\\\\a]]]]]]^]]]]]]]^]]]]01T22ENDѕF2ffffffffffffffQѕя`SяЏcC?@8410==O (1C4V2=8FB2>, A?>@C465==O, AB2>@5==O) =5>1>@>B=8E 0:B82V2ѕЁccccccccccccccccccccccccccccdgggggghggggggghggggffffffffffffffffffffffffffffffffQѕя`Sяџ K#AL>3> 70 ?>A;C30<8, >B@8<0=8<8 2V4 =5@57845=B0 =0 <8B=V9 B5@8B>@VW #:@0W=8ѕ(                %S %?5@5=>A8BLAO 4> @O4:0 13.1 45:;0@0FVWѕ           Y555555Q
+
+===== TextRC i,48 used in XML concat =====
+Pattern: TextRC\(i,\s*48\)
+Hits: 4
+--- #1 @ 64522 'TextRC(i,48)' ---
+<T11RXXXXG42 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,29) + '</T11RXXXXG42>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG6 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,34) + '</T11RXXXXG6>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG7 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,41) + '</T11RXXXXG7>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG8 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,48) + '</T11RXXXXG8>'+ CRLF
+*!*					ENDIF
+*!*				ENDFOR
+*!*				IF m.lnNomStr = 0
+*!*					_xml = _xml + '<T11RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG41 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*
+--- #2 @ 109867 'TextRC(i,48)' ---
+hisform.PF.Page5.F1_55.TextRC(i,28) + '</T'+key2+'RXXXXG5>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,34) + '</T'+key2+'RXXXXG6>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,42) + '</T'+key2+'RXXXXG7>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+				ENDFOR 
+			ENDIF 
+		ELSE	
+			_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml 
+--- #3 @ 115331 'TextRC(i,48)' ---
+ + "1" + '</T'+key2+'RXXXXG5>'+ CRLF
+							ENDIF
+							
+							_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,38) + '</T'+key2+'RXXXXG6>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					
+				ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),1,2)+'</T'+key2+'RXXXXG311>'+  CRLF
+						*	_xml = _xml + '<T'+key2+'RXXXXG312 ROWNUM="'+thisf
+--- #4 @ 117510 'TextRC(i,48)' ---
+RC(i,x2) + '</T'+key2+'RXXXXG5>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x3) + '</T'+key2+'RXXXXG6>'+ CRLF
+					*IF prkasmetod >0
+					*_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*ENDIF 
+				ENDFOR 
+			ENDIF 
+		ELSE	
+						IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+
+
+===== TextRC.*,48.*RXXXX|RXXXX.*48 =====
+Pattern: RXXXXG8.{0,120}48|48.{0,120}RXXXXG8
+Hits: 4
+--- #1 @ 64448 'RXXXXG8 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC' ---
+TRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,29) + '</T11RXXXXG42>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG6 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,34) + '</T11RXXXXG6>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG7 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,41) + '</T11RXXXXG7>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG8 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,48) + '</T11RXXXXG8>'+ CRLF
+*!*					ENDIF
+*!*				ENDFOR
+*!*				IF m.lnNomStr = 0
+*!*					_xml = _xml + '<T11RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG41 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!
+--- #2 @ 109782 'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F' ---
+5.F1_55.TextRC(i,28) + '</T'+key2+'RXXXXG5>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,34) + '</T'+key2+'RXXXXG6>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,42) + '</T'+key2+'RXXXXG7>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+				ENDFOR 
+			ENDIF 
+		ELSE	
+			_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml
+--- #3 @ 115246 'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F' ---
+key2+'RXXXXG5>'+ CRLF
+							ENDIF
+							
+							_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,38) + '</T'+key2+'RXXXXG6>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					
+				ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),1,2)+'</T'+key2+'RXXXXG311>'+  CRLF
+						*	_xml = _xml + '<T'+key2+'RXXXXG312 ROWNUM="'+this
+--- #4 @ 117425 'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F' ---
+'+key2+'RXXXXG5>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x3) + '</T'+key2+'RXXXXG6>'+ CRLF
+					*IF prkasmetod >0
+					*_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*ENDIF 
+				ENDFOR 
+			ENDIF 
+		ELSE	
+						IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+
+===== FULL Command5.Click =====
+PROCEDURE Click count: 10
+Command5 at 136509
+Command5 at 136543
+Matched Name=Command5 ... PROCEDURE Click
+Name = "Command5"
+ZVIT_BUH29_1_EDIT202102Command5commandbuttoncommandbuttonNPROCEDURE Click
+LOCAL cFilePath, nType, oFile, cNameFile
+
+LOCAL oErr &&AS Exception
+
+
+cFilePath = ""
+nType = 11
+cNameFile = ""
+	LOCAL F1, namef
+	DO CASE
+	CASE thisform.pf.ActivePage = 1
+		F1 = thisform.PF.Page1.F1_1
+	CASE thisform.pf.ActivePage = 2
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page2.Caption 
+	CASE thisform.pf.ActivePage = 3
+		F1 = thisform.PF.Page3.F1_3
+		cNameFile = thisform.PF.Page3.Caption 
+	CASE thisform.pf.ActivePage = 4
+		F1 = thisform.PF.Page4.F1_4
+		cNameFile = thisform.PF.Page4.Caption 
+	CASE thisform.pf.ActivePage = 5
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page5.Caption 
+				
+	OTHERWISE
+
+	ENDCASE
+
+cFilePath = PUTFILE("Збереження звіту...",IIF(EMPTY(cNameFile),"Zvit",cNameFile),"XLS")
+
+IF cFilePath == ""
+		*не вибрано
+ELSE
+	*вибрано
+	TRY 
+		F1.write(cFilePath,nType)
+	CATCH TO oErr
+		MESSAGEBOX("Файл уже використовується!"+CHR(13)+"Завершіть роботу з ним і повторіть експорт"+CHR(13)+"або змініть ім'я.",0+64,"Увага!")		
+	FINALLY  
+		
+	ENDTRY 
+	
+*!*		IF TYPE("oErr")="O"
+*!*		
+*!*		ELSE 
+*!*		
+*!*			*IF thisform.check1.Value = 1
+*!*					****Запускаємо ексель чи опен офіс
+*!*					thisform.LockScreen = .T. 
+*!*					thisform.export(cFilePath)
+*!*					thisform.LockScreen = .F. 				
+*!*			*ENDIF 
+*!*				
+*!*		ENDIF 	
+ENDIF 
+
+ENDPROC
+
+===== Command5 near Click/PROCEDURE =====
+Pattern: Command5[\s\S]{0,300}Click|Click[\s\S]{0,300}Command5
+Hits: 1
+--- #1 @ 136509 'Command5"
+ZVIT_BUH29_1_EDIT202102Command5commandbuttoncommandbuttonNPROCEDURE' ---
+FontItalic = .F.
+FontName = "Arial"
+FontSize = 7
+Anchor = 9
+Picture = ..\..\
+Caption = "XML"
+StatusBarText = "Експорт в XML"
+TabIndex = 2
+TabStop = .F.
+ToolTipText = "Експорт в XML"
+Name = "Command5"
+ZVIT_BUH29_1_EDIT202102Command5commandbuttoncommandbuttonNPROCEDURE Click
+LOCAL cFilePath, nType, oFile, cNameFile
+
+LOCAL oErr &&AS Exception
+
+
+cFilePath = ""
+nType = 11
+cNameFile = ""
+	LOCAL F1, namef
+	DO CASE
+	CASE thisform.pf.ActivePage = 1
+		F1 = thisform.PF.Page1.F1_1
+	CASE thisform.pf.ActivePage = 2
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page2.Caption 
+	CASE thisform.pf.ActivePage = 3
+		F1 = thisform.PF.Page3.F1_3
+		cNameFile = thisform.PF.Page3.Caption 
+	CASE thisform.pf.ActivePage = 4
+		F1 = thisform.PF.Page4.F1_4
+		cNameFile = thisform.PF.Page4.Caption 
+	CASE thisform.pf.ActivePage = 5
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page5.Caption 
+				
+	OTHERWISE
+
+	ENDCASE
+
+cFilePath = PUTFILE("Збереження звіту...",IIF(EMPTY(cNameFile),"Zvit",cNameFile),"XLS")
+
+IF cFilePath == ""
+		*не вибрано
+ELSE
+	*вибрано
+	TRY 
+		F1.write(cFilePath,nType)
+	CATCH TO oErr
+		MESSAGEBOX("Файл уже використовується!"+CHR(13)+"Завершіть роботу з ним і повторіть експорт"+CHR(13)+"або змініть ім'я.",0+64,"Увага!")		
+	FINALLY  
+		
+	ENDTRY 
+	
+*!*		IF TYPE("oErr")="O"
+*!*		
+*!*		ELSE 
+*!*		
+*!*			*IF thisform.check1.Value = 1
+*!*					****Запускаємо ексель чи опен офіс
+*!*					thisform.LockScreen = .T. 
+*!*					thisform.export(cFilePath)
+*!*					thisform.LockScreen = .F. 				
+*!*			*ENDIF 
+*!*				
+*!*		ENDIF 	
+ENDIF 
+
+ENDPROC
+Top = 1
+Left = 542
+Height = 25
+Width = 25
+FontItalic = .T.
+FontName = "Times New Roman"
+Anchor = 9
+Picture = ..\..\picture\bmps\excel.bmp
+Caption = "
+
+################ CONTINUATION Q2-Q5 ################
+
+===== Click procedures (XML-related or near Command5) =====
+Click #1 @ 129223 bodyLen=4892 XML=False nearCmd5=False
+Click #2 @ 134400 bodyLen=420 XML=False nearCmd5=False
+Click #3 @ 135154 bodyLen=465 XML=False nearCmd5=False
+Click #4 @ 135967 bodyLen=294 XML=True nearCmd5=False
+--- BEFORE (obj context) ---
+Caption = ""
+StatusBarText = "Справка"
+TabIndex = 5
+TabStop = .F.
+ToolTipText = "Справка"
+Visible = .T.
+Name = "cmdHelp"
+ZVIT_BUH29_1_EDIT202102cmdHelpcommandbuttoncommandbuttonУPROCEDURE Click
+DO CASE
+CASE thisform.pf.ActivePage = 1
+	TRY
+		thisform.PF.Page1.F1_1.FilePrintPreview()
+	CATCH
+	ENDTRY
+
+CASE thisform.pf.ActivePage = 2
+	TRY
+		thisform.PF.Page2.F1_2.FilePrintPreview()
+	CATCH
+	ENDTRY
+CASE thisform.pf.ActivePage = 3
+	TRY
+		thisform.PF.Page3.F1_3.FilePrintPreview()
+	CATCH
+	ENDTRY
+CASE thisform.pf.ActivePage = 4
+	TRY
+		thisform.PF.Page4.F1_4.FilePrintPreview()
+	CATCH
+	ENDTRY
+OTHERWISE
+
+ENDCASE
+
+
+ENDPROC
+Top = 1
+Left = 516
+Height = 25
+Width = 25
+FontItalic = .T.
+FontName = "Times New Roman"
+Anchor = 9
+Picture = ..\..\picture\bmps\preview.bmp
+Caption = ""
+StatusBarText = "Попередній перегляд"
+TabIndex = 2
+TabStop = .F.
+ToolTipText = "Попередній перегляд"
+Name = "Command6"
+ZVIT_BUH29_1_EDIT202102Command6commandbuttoncommandbutton(
+--- FULL BODY ---
+PROCEDURE Click
+DO CASE
+	CASE thisform.pf.ActivePage = 1
+		thisform.page1toxml()
+	CASE thisform.pf.ActivePage = 2
+		thisform.page2toxml()
+	CASE thisform.pf.ActivePage = 3
+		thisform.page3toxml()
+	CASE thisform.pf.ActivePage = 4
+		thisform.page4toxml()
+	OTHERWISE
+ENDCASE
+
+
+ENDPROC
+Click #5 @ 136580 bodyLen=1356 XML=False nearCmd5=True
+--- BEFORE (obj context) ---
+DTRY
+OTHERWISE
+
+ENDCASE
+
+
+ENDPROC
+Top = 1
+Left = 516
+Height = 25
+Width = 25
+FontItalic = .T.
+FontName = "Times New Roman"
+Anchor = 9
+Picture = ..\..\picture\bmps\preview.bmp
+Caption = ""
+StatusBarText = "Попередній перегляд"
+TabIndex = 2
+TabStop = .F.
+ToolTipText = "Попередній перегляд"
+Name = "Command6"
+ZVIT_BUH29_1_EDIT202102Command6commandbuttoncommandbutton(PROCEDURE Click
+DO CASE
+	CASE thisform.pf.ActivePage = 1
+		thisform.page1toxml()
+	CASE thisform.pf.ActivePage = 2
+		thisform.page2toxml()
+	CASE thisform.pf.ActivePage = 3
+		thisform.page3toxml()
+	CASE thisform.pf.ActivePage = 4
+		thisform.page4toxml()
+	OTHERWISE
+ENDCASE
+
+
+ENDPROC
+Top = 1
+Left = 568
+Height = 25
+Width = 25
+FontItalic = .F.
+FontName = "Arial"
+FontSize = 7
+Anchor = 9
+Picture = ..\..\
+Caption = "XML"
+StatusBarText = "Експорт в XML"
+TabIndex = 2
+TabStop = .F.
+ToolTipText = "Експорт в XML"
+Name = "Command5"
+ZVIT_BUH29_1_EDIT202102Command5commandbuttoncommandbuttonN
+--- FULL BODY ---
+PROCEDURE Click
+LOCAL cFilePath, nType, oFile, cNameFile
+
+LOCAL oErr &&AS Exception
+
+
+cFilePath = ""
+nType = 11
+cNameFile = ""
+	LOCAL F1, namef
+	DO CASE
+	CASE thisform.pf.ActivePage = 1
+		F1 = thisform.PF.Page1.F1_1
+	CASE thisform.pf.ActivePage = 2
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page2.Caption 
+	CASE thisform.pf.ActivePage = 3
+		F1 = thisform.PF.Page3.F1_3
+		cNameFile = thisform.PF.Page3.Caption 
+	CASE thisform.pf.ActivePage = 4
+		F1 = thisform.PF.Page4.F1_4
+		cNameFile = thisform.PF.Page4.Caption 
+	CASE thisform.pf.ActivePage = 5
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page5.Caption 
+				
+	OTHERWISE
+
+	ENDCASE
+
+cFilePath = PUTFILE("Збереження звіту...",IIF(EMPTY(cNameFile),"Zvit",cNameFile),"XLS")
+
+IF cFilePath == ""
+		*не вибрано
+ELSE
+	*вибрано
+	TRY 
+		F1.write(cFilePath,nType)
+	CATCH TO oErr
+		MESSAGEBOX("Файл уже використовується!"+CHR(13)+"Завершіть роботу з ним і повторіть експорт"+CHR(13)+"або змініть ім'я.",0+64,"Увага!")		
+	FINALLY  
+		
+	ENDTRY 
+	
+*!*		IF TYPE("oErr")="O"
+*!*		
+*!*		ELSE 
+*!*		
+*!*			*IF thisform.check1.Value = 1
+*!*					****Запускаємо ексель чи опен офіс
+*!*					thisform.LockScreen = .T. 
+*!*					thisform.export(cFilePath)
+*!*					thisform.LockScreen = .F. 				
+*!*			*ENDIF 
+*!*				
+*!*		ENDIF 	
+ENDIF 
+
+ENDPROC
+Click #6 @ 138276 bodyLen=452 XML=False nearCmd5=False
+Click #7 @ 139199 bodyLen=321 XML=False nearCmd5=False
+Click #8 @ 140488 bodyLen=44 XML=False nearCmd5=False
+Click #9 @ 140822 bodyLen=2448 XML=False nearCmd5=False
+Click #10 @ 146553 bodyLen=425 XML=False nearCmd5=False
+
+===== T22END contexts =====
+pat=T22END
+hits=7
+--- #1 @ 33007 ---
+
+		m.lnSunR4 = m.lnSunR4 + sumall
+	
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		*thisform.PF.Page5.F1_55.TextRC(lnRow,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(lnRow,46) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+
+		lnRow = lnRow + 1
+	ENDSCAN 
+
+	*IF m.lnI <> 0
+	*	thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR5,18,2))
+		*thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,31) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumallpdv,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,46) = ALLTRIM(STR(ttt2.sumallpdv7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,31) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,38) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,46) = "0.00"
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+3,31) = "0.00"
+		thisform.PF.Page5.F1_5
+--- #2 @ 66007 ---
+Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0110G8>'+ CRLF
+*!*			ENDIF
+*!*		ENDIF
+
+*!*	****ТАБЛИЦЯ 2
+*!*		F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*		IF (F1Find.FindNext())
+*!*			IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+*!*				T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+*!*				F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				IF (F1Find.FindNext())
+*!*					FOR i = T1Start TO (F1Find.Row - 1)
+*!*						_xml = _xml + '<T2RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T2RXXXXG2>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3A ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,23) + '</T2RXXXXG3A>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3B ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,26) + '</T2RXXXXG3B>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG4 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,31) + '</T2RXXXXG4>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,39) + '</T2RXXXXG5>'+ CRLF
+*!*						_xml = _xml + '<T2RX
+--- #3 @ 67568 ---
+			ELSE	
+*!*				_xml = _xml + '<T2RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG3A xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG3B xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*			ENDIF
+*!*			
+*!*			F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*			F1Find.FindNext()			
+*!*			FOR i = 0 TO 3
+*!*				_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G4>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,31) + '</R02'+ALLTRIM(STR(i))+'G4>'+ CRLF
+*!*				_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G5>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,39) + '</R02'+ALLTRIM(STR(i))+'G5>'+ CRLF
+*!*				IF i <> 1
+*!*				 	_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G6>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,46) + '</R02'+ALLTRIM(STR(i))+'G6>'+ CRLF
+*!*				ENDIF
+*!*			ENDFOR
+*!*		ENDIF 
+
+	_xml = _xml + '<HFILL>'+H_FILL+'</HFILL>' + CRLF	
+				  
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + IIF(EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14))),'<HBOS xsi:nil="true"/>','<HBOS>'+ ALLTRIM
+--- #4 @ 124554 ---
+эю'TхчьCCхчш+фффф	цgэю'TхчьCCхчш0фффф	цgэю+ьCхчшхчш+шфффф	цэю)Tфффф	цьхчэьш2эьхчэю-Tфффф	цьхчэьшэьCCхчZэю)Tфффф	цьхчэьшэьхчэю7Tфффф	цьхчэьшэьCхчш=Щ/2020эю8Tфффф	цьхчэьш&эьCCхчщяяшшZэю8Tфффф	цьхчэьш+эьCCхчщяяшшZэю8Tфффф	цьхчэьш0эьCCхчщяяшшZэюTхчьхчшэюTхчьхчшэю-Tфффф	цьхчэьшэьCCхчZэю'Tфффф	цьхчэьш2эьЩэющщюTхчьхчшэю-Tфффф	цьхчэьшэьCCхчZэююTхчьхчшэююююючюJьшэ(хчхчю>TчьCЩT22шшш1фффф	чш4шфффф	ц
+эю%ьCфцэщуюC%ьCфчфффф	цс CCфчшфффф	цgшэщпю5TчьфчCCфчфффф	цтшуш6эюATчьCЩT22ENDшшш1фффф	чш4шфффф	ц
+эю%ьCфцэщлюTхчьчэючьчэ(ьфчшэщзю+%ьCCCхчшфффф	ц>шэщюTхчьхчшэю-Tфффф	цьхчэьшэьCCхчZэюTхчьчшэюHююo%ьCCхчш&фффф	цgшс CCхчш+фффф	цgшс CCхчш0фффф	цgшэщюTхчьхчшэю'TхчьCCхчш2фффф	цэю'TхчьCCхчшфффф	цэю'TхчьCCхчшфффф	цэю'TхчьCCхчшфффф	цgэю'TхчьCCхчш&фффф	цgэю'TхчьCCхчш.фффф	цgэю+ьCхчшхчш+шфффф	цэю)Tфффф	цьхчэьш2эьхчэю-Tфффф	цьхчэьшэьCCхчZэю)Tфффф	цьхчэьшэьхчэю7Tфффф	цьхчэьшэьCхчш=Щ/2020эю8Tфффф	цьхчэьшэьCCхчщяяшшZэю8Tфффф	цьхчэьш&эьCCхчщяяшшZэю8Tфффф	цьхчэьш.эьCCхчщяяшшZэюTхчьхчшэюTхчьхчшэю-Tфффф	цьхчэьшэьCCхчZэю'Tфффф	цьхчэьш2эьЩэющОюTхчьхчшэю-Tфффф	цьхчэьшэьCCхчZэююTхчьхчшэююююючюUTHISFORMPF
+ACTIVEPAGEDGR_BOXDGR_MOVLNROWLNNOMF1FINDPAGE5F1_55DEFINESEARCHMAXROWFINDNEXT	ROWHIDDENROWTEXTRCT1STARTILCMARKLC3LC19LN38LN43LN48INSERTRANGELN31LN46DGR_ENDClick,яя1rAA2qSб!1Q!ссQС1BAфRqqqqqqІСqЃЃЃQQСqЃQСARAAAArSб!1Q!ссQС1BAфRqqqqqqІСqЃЃЃ
+--- #5 @ 132142 ---
+ENDIF
+				
+				m.lnRow = m.lnRow + 1
+			ENDFOR
+		ENDIF
+	ENDIF
+ENDIF
+
+do dgr_mov
+				
+* Таблиця 2.2
+STORE 0 TO m.lnNom, m.lnRow
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+		T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		IF (F1Find.FindNext())
+			m.lnRow = T1Start
+			FOR i = T1Start TO (F1Find.Row - 1)
+				IF LEN(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,3)))=0
+					m.lnNom = m.lnNom + 1
+					thisform.PF.Page5.F1_55.TextRC(m.lnRow,1) = ALLTRIM(STR(m.lnNom))
+					m.lnRow = lnRow + 1
+					
+					SKIP
+				ENDIF 
+					
+					IF VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,38))<>0 OR;
+						VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,43))<>0 OR;
+						VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,48))<>0
+						
+						m.lnNom = m.lnNom + 1
+						m.lcMark = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,50))
+						m.lc3 = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,3))
+						m.lc19 = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,19))
+						m.ln31 = VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,31))
+						m.ln38 = VAL(thisform.PF.Page5.F1_55.Text
+--- #6 @ 187466 ---
+1111111ffffffffQѕя`SяѕЄЂ)*)))))))))))))))*)))))))7)))*))))))*555555555556effffff11111ffffffffQѕя`ЂSяѕЄЃ+,+++++++++++++++,+++++++0+++,++++++,ZZZZZZZZZZZXeffffff11111ffffffffQѕя`ЃSя
+>1[
++2ѕ$++++++++++++++,)3.1ѕ)))))*)3.2ѕ))))
+04ѕ+++++,$
+%+5ѕ&+++++++,
+-06ѕN.+++ffffff11111ffffffffQѕя`Sя
+ѓ>1ѕfѓ[>>>>>>>>>>>>>>>[\\\\\\a\\\\a]]]]]]^]]]]]]]^]]]]0ѓ1T22ѕFѓ2fff11111ffffffffQѕя`ѓSяќ J#AL>3> 70 72VB=89 (?>40B:>289) ?5@V>4 (@O4>: 14 45:;0@0FVW), C B><C G8A;V:ѕf                 \\\\\\\\\\\a]]]]]]^]]]]]]]^]]]]01T22ENDѕF2ffffffffffffffQѕя`SяЏcC?@8410==O (1C4V2=8FB2>, A?>@C465==O, AB2>@5==O) =5>1>@>B=8E 0:B82V2ѕЁccccccccccccccccccccccccccccdgggggghggggggghggggffffffffffffffffffffffffffffffffQѕя`Sяџ K#AL>3> 70 ?>A;C30<8, >B@8<0=8<8 2V4 =5@57845=B0 =0 <8B=V9 B5@8B>@VW #:@0W=8ѕ(                %S %?5@5=>A8BLAO 4> @O4:0 13.1 45:;0@0FVWѕ           Y555555QOOOOOOROOOReffffffffffffffffffffffffffffffffQѕя`SяѕЄ                 %>>>>>>>>>>>>7))))))b//////_///_effffffffffffffffffffffffffffffffQѕя`Sяѕ*                 %S %?5@5=>A8BLAO 4> @O4:0 13.2 45:;0@0FVWѕ           Y555556)))))))*))))ffffffffffffffffffffffffffffffffQѕя`Sяя(*** # 3@0DV ?@>AB02;OTBLAO ?>7=0G:0 "+" C @07V 74V9A=5==O >?5@0FV9 7 ?@8410==O (1C4V2=8FB20, A?>@C465==O, AB2>@5==O) =5>1>@>B=8E 0:B82V2.ѕh(((((((((((((((((((((((((((((((((((((((((((((((1ѕя`SяѕяЉяѕяяѕяЊяѕяЌяѕяЋяѕяЏяѕяђяѕя(((((((((((((((((((((((((((((((((((((((((((((((яѕяя!0B0 ?>40==Oѕ>111))
+--- #7 @ 198812 ---
+Tчьшэюoыzn_zvit_tmp1ьч;эьCCчh#iэQчYьCCчh#HэQчZьCч=къэQч=ьCCчiштч>уъ	6къэQч>ьCCчiштч>уъ	6къэQч?їьч;эьчYэьчZэјЅыttt1ЧюЋoыzn_zvit_tmp1ьшэQчaьCч=къэQч=ьCCчiштч>уъ	6къэQч>ьCCчiштч>уъ	6къэQч?Жьч[эїьчaэјЅыttt2ЧюFьыttt1эю#)ю~щ(-юFьыttt1эюTчьчшэю%ьчшэщё+ю'ьCч7шч7ш0шфф!ф3ф4цLэюю)Tфф!ф3ф4ц'ьч7эьшэьCCчZэю'Tфф!ф3ф4ц'ьч7эьшэьCч;эю?Tфф!ф3ф4ц'ьч7эьшэьCCCчZZшы0ы/CCчYZэю/Tфф!ф3ф4ц'ьч7эьшэьCCч=шшZэюTхчVьхчVч=эю/Tфф!ф3ф4ц'ьч7эьш&эьCCч>шшZэюTхчWьхчWч>эю/Tфф!ф3ф4ц'ьч7эьш.эьCCч?шшZэюTхчXьхчXч?эюTч7ьч7шэююATч ьCЩT22ENDшшш1фф!ф3ф4ч%ш4шфф!ф3ф4ц$эю%ьCф ц&эщж/ю4Tфф!ф3ф4ц'ьф ч(эьшэьCCхчVшшZэю4Tфф!ф3ф4ц'ьф ч(эьш&эьCCхчWшшZэю4Tфф!ф3ф4ц'ьф ч(эьш.эьCCхчXшшZэю9Tфф!ф3ф4ц'ьф ч(шэьшэьCCфdч=шшZэю9Tфф!ф3ф4ц'ьф ч(шэьш&эьCCфdч>шшZэю9Tфф!ф3ф4ц'ьф ч(шэьш.эьCCфdч?шшZэю0Tфф!ф3ф4ц'ьф ч(шэьшэьЩ0.00эю0Tфф!ф3ф4ц'ьф ч(шэьш&эьЩ0.00эю0Tфф!ф3ф4ц'ьф ч(шэьш.эьЩ0.00эю0Tфф!ф3ф4ц'ьф ч(шэьшэьЩ0.00эю0Tфф!ф3ф4ц'ьф ч(шэьш&эьЩ0.00эю0Tфф!ф3ф4ц'ьф ч(шэьш.эьЩ0.00эююьCыttt1цNэюьCыttt2цNэюю@Tч ьCЩHFILLшшш1фф!ф3ф4ч%ш4шфф!ф3ф4ц$эю%ьCф ц&эщ1ю Tфф!ф3ф4ц'ьф ч(эьшэьCCCCCфч,%шшZшы0шш\CCCCCфч,%шшZшы0шш\CCCCCфч,HшшZшы0шш\CCCCCфч,HшшZшы0шш\CCCCфч,iшшZшш\CCCCфч,iшшZшш\CCCCфч,iшшZшш\CCCCфч,iшшZшш\эюю?Tч ьCЩHBOSшшш1фф!ф3ф4ч%ш4шфф!ф3ф4ц$эю%ьCф ц&эщ2ю+Tфф!ф3ф4ц'ьф ч(эьшэьфч-эюю@Tч ьCЩHKBOSшшш1фф!ф3ф4ч%ш4шфф!ф3ф4ц$эю%ьCф ц&эщѓ2ю+Tфф!ф3ф4ц'ьф ч(эьшэьфч/эюю?Tч ьCЩHBUHшшш1фф!ф3ф4ч%ш4шфф!ф3ф4ц$эю%ьCф ц&эщ3ю+Tфф!ф3ф4ц'ьф ч(эьшэьфч.эюю@Tч ьCЩHKBUHшшш1фф!ф3ф4ч%ш4ш
+
+===== DefineSearch T22END =====
+pat=DefineSearch\(['\"]T22END
+hits=4
+--- #1 @ 32993 ---
+C(lnRow,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(lnRow,46) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+
+		lnRow = lnRow + 1
+	ENDSCAN 
+
+	*IF m.lnI <> 0
+	*	thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR5,18,2))
+		*thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,31) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumallpdv,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,46) = ALLTRIM(STR(ttt2.sumallpdv7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,31) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,38) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,46) = "0.00"
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+3,31) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+3,38) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+3,46) = "0.00"
+	ENDIF
+
+	closedbf1('ttt1')
+	closedbf1('ttt2')
+ENDIF
+
+******************************555555555555555555555555555555555555
+
+
+******************************555555555555555555555555555555555555
+
+F1F
+--- #2 @ 65993 ---
+.PF.Page5.F1_55.maxRow,52,0)
+*!*		IF (F1Find.FindNext())
+*!*			IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+*!*				T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+*!*				F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				IF (F1Find.FindNext())
+*!*					FOR i = T1Start TO (F1Find.Row - 1)
+*!*						_xml = _xml + '<T2RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T2RXXXXG2>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3A ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,23) + '</T2RXXXXG3A>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3B ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,26) + '</T2RXXXXG3B>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG4 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,31) + '</T2RXXXXG4>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,39) + '</T2RXXXXG5>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,46) + '</T2RXXXXG6>'+ CRLF
+*!*					ENDFOR 
+*!*				ENDIF 
+*!*			ELSE	
+*!*				_xml = _xml + '<T2RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG3A xsi:nil="true" ROWNUM="1"/>'+ CR
+--- #3 @ 67554 ---
+:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*			ENDIF
+*!*			
+*!*			F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*			F1Find.FindNext()			
+*!*			FOR i = 0 TO 3
+*!*				_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G4>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,31) + '</R02'+ALLTRIM(STR(i))+'G4>'+ CRLF
+*!*				_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G5>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,39) + '</R02'+ALLTRIM(STR(i))+'G5>'+ CRLF
+*!*				IF i <> 1
+*!*				 	_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G6>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,46) + '</R02'+ALLTRIM(STR(i))+'G6>'+ CRLF
+*!*				ENDIF
+*!*			ENDFOR
+*!*		ENDIF 
+
+	_xml = _xml + '<HFILL>'+H_FILL+'</HFILL>' + CRLF	
+				  
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + IIF(EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14))),'<HBOS xsi:nil="true"/>','<HBOS>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14)) +'</HBOS>')+ CRLF	
+	ENDIF 
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HKBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + IIF(EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14))),'<HKBOS
+--- #4 @ 132128 ---
+T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+		T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		IF (F1Find.FindNext())
+			m.lnRow = T1Start
+			FOR i = T1Start TO (F1Find.Row - 1)
+				IF LEN(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,3)))=0
+					m.lnNom = m.lnNom + 1
+					thisform.PF.Page5.F1_55.TextRC(m.lnRow,1) = ALLTRIM(STR(m.lnNom))
+					m.lnRow = lnRow + 1
+					
+					SKIP
+				ENDIF 
+					
+					IF VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,38))<>0 OR;
+						VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,43))<>0 OR;
+						VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,48))<>0
+						
+						m.lnNom = m.lnNom + 1
+						m.lcMark = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,50))
+						m.lc3 = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,3))
+						m.lc19 = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,19))
+						m.ln31 = VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,31))
+						m.ln38 = VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,38))
+						m.ln46 = VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,46))
+						
+						thisform.PF.Page5.F1_55.insertRange(m.lnRow,1,m.lnRow,43,3)
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,50) = m.lcMark
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,1) = ALLTRIM(STR(m.lnNom))
+						this
+
+===== DefineSearch T22 =====
+pat=DefineSearch\(['\"]T22['\"]
+hits=3
+--- #1 @ 30858 ---
+ i = 2 TO 3
+			thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,31) = "0.00"
+			thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,38) = "0.00"
+			thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,43) = "0.00"
+		ENDFOR
+	ENDIF
+
+	closedbf1('ttt1')
+	closedbf1('ttt2')
+
+ENDIF
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	STORE 0 TO m.lnRR4, m.lnRR5
+	STORE 0 TO m.lnSunR4, m.lnSunR5, m.lnSunR7
+	lnRow = F1Find.Row
+	*lnRow = F1Find.Row + 1
+	lnI = 0
+
+*!*		SELECT ipk, YEAR(CTOD(datenpod)) as yy, MONTH(CTOD(datenpod)) as mm, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv;
+*!*		INTO CURSOR ttt1 FROM zn_zvit_tmp1;
+*!*		READWRITE;
+*!*		GROUP BY ipk, yy, mm
+
+	SELECT ipk, YEAR(CTOD(datenpod)) as yy, MONTH(CTOD(datenpod)) as mm,;
+			SUM(sumall) as sumall, SUM(IIF(pprpdv<>7,sumallpdv,000000.00)) as sumallpdv, SUM(IIF(pprpdv=7,sumallpdv,000000.00)) as sumallpdv7;
+	INTO CURSOR ttt1 FROM zn_zvit_tmp1;
+	READWRITE;
+	GROUP BY ipk, yy, mm
+
+*!*		SELECT 1 as gr, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv;
+*!*		INTO CURSOR ttt2 FR
+--- #2 @ 65659 ---
+>'+ CRLF
+*!*				_xml = _xml + '<R0110G7>' + Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,41) + '</R0110G7>'+ CRLF
+*!*				_xml = _xml + '<R0110G8>' + Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0110G8>'+ CRLF
+*!*			ENDIF
+*!*		ENDIF
+
+*!*	****ТАБЛИЦЯ 2
+*!*		F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*		IF (F1Find.FindNext())
+*!*			IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+*!*				T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+*!*				F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				IF (F1Find.FindNext())
+*!*					FOR i = T1Start TO (F1Find.Row - 1)
+*!*						_xml = _xml + '<T2RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T2RXXXXG2>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3A ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,23) + '</T2RXXXXG3A>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3B ROWNUM
+--- #3 @ 131814 ---
+50) = ""
+					ELSE
+						m.lnNom = m.lnNom + 1
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,1) = ALLTRIM(STR(m.lnNom))
+					ENDIF
+				
+				m.lnRow = m.lnRow + 1
+			ENDFOR
+		ENDIF
+	ENDIF
+ENDIF
+
+do dgr_mov
+				
+* Таблиця 2.2
+STORE 0 TO m.lnNom, m.lnRow
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+		T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		IF (F1Find.FindNext())
+			m.lnRow = T1Start
+			FOR i = T1Start TO (F1Find.Row - 1)
+				IF LEN(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,3)))=0
+					m.lnNom = m.lnNom + 1
+					thisform.PF.Page5.F1_55.TextRC(m.lnRow,1) = ALLTRIM(STR(m.lnNom))
+					m.lnRow = lnRow + 1
+					
+					SKIP
+				ENDIF 
+					
+					IF VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,38))<>0 OR;
+						VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,43))<>0
+
+===== lnSunR7 assignments =====
+pat=lnSunR7
+hits=9
+--- #1 @ 26911 ---
+R(ROUND(m.lnsumallpdvo,0)))	
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+2,43) = ALLTRIM(STR(ROUND(0,0)))	
+ENDIF 
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T21",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	STORE 0 TO m.lnRR4, m.lnRR5
+	STORE 0 TO m.lnSunR4, m.lnSunR5,m.lnSunR7
+	lnRow = F1Find.Row 
+	*lnRow = F1Find.Row + 1
+	lnI = 0
+
+*!*		SELECT ipk, yy, mm, SUM(sum52+sum55) as sumall, SUM(sumpdv52) as sumallpdv,SUM(sumpdv55) as sumallpdv7;
+*!*		FROM zn_zvit_tmp4 WHERE (sum52+sum55!=0 AND sumpdv52+sumpdv55!=0);
+*!*		READWRITE;
+*!*		GROUP BY ipk, yy, mm ORDER BY ipk INTO CURSOR ttt1
+
+	SELECT ipk, yy, mm, PrOsnFond, SUM(sum52+sum55) as sumall, SUM(sumpdv52) as su
+--- #2 @ 28822 ---
+thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumall,18,2))
+		m.lnSunR4 = m.lnSunR4 + sumall
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,43) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+		lnRow = lnRow + 1
+	ENDSCAN 
+	**** Вставка 7%
+*!*	SELECT('ttt1_7')
+*!*		GO TOP 
+*!*		SCAN 
+*!*			SELECT('ttt1_7')		
+*!*			lnI = lnI + 1
+*!*			IF lnI>1
+*!*				thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,43,3)
+*!*			ENDIF 
+*!*	*		thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,48,3)
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,1) = ALLTRIM(STR(lni))
+*!*
+--- #3 @ 28834 ---
+Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumall,18,2))
+		m.lnSunR4 = m.lnSunR4 + sumall
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,43) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+		lnRow = lnRow + 1
+	ENDSCAN 
+	**** Вставка 7%
+*!*	SELECT('ttt1_7')
+*!*		GO TOP 
+*!*		SCAN 
+*!*			SELECT('ttt1_7')		
+*!*			lnI = lnI + 1
+*!*			IF lnI>1
+*!*				thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,43,3)
+*!*			ENDIF 
+*!*	*		thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,48,3)
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,1) = ALLTRIM(STR(lni))
+*!*			thisform.
+--- #4 @ 30293 ---
+1END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) = ALLTRIM(STR(m.lnSunR5,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,43) = ALLTRIM(STR(ttt2.sumallpdv,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,52) = ALLTRIM(m.lcSs)
+
+		FOR i = 2 TO 3
+			thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,31) = "0.00"
+			thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,38) = "0.00"
+			this
+--- #5 @ 31012 ---
+5.F1_55.TextRC(F1Find.Row+i,43) = "0.00"
+		ENDFOR
+	ENDIF
+
+	closedbf1('ttt1')
+	closedbf1('ttt2')
+
+ENDIF
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	STORE 0 TO m.lnRR4, m.lnRR5
+	STORE 0 TO m.lnSunR4, m.lnSunR5, m.lnSunR7
+	lnRow = F1Find.Row
+	*lnRow = F1Find.Row + 1
+	lnI = 0
+
+*!*		SELECT ipk, YEAR(CTOD(datenpod)) as yy, MONTH(CTOD(datenpod)) as mm, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv;
+*!*		INTO CURSOR ttt1 FROM zn_zvit_tmp1;
+*!*		READWRITE;
+*!*		GROUP BY ipk, yy, mm
+
+	SELECT ipk, YEAR(CTOD(datenpod)) as yy, MONTH(CTOD(datenpod)) as mm,;
+			SUM(sumall) as sumall, SUM(IIF(pprpdv<>7,sumallpd
+--- #6 @ 32795 ---
+mall,18,2))
+		m.lnSunR4 = m.lnSunR4 + sumall
+	
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		*thisform.PF.Page5.F1_55.TextRC(lnRow,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(lnRow,46) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+
+		lnRow = lnRow + 1
+	ENDSCAN 
+
+	*IF m.lnI <> 0
+	*	thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Fi
+--- #7 @ 32807 ---
+
+		m.lnSunR4 = m.lnSunR4 + sumall
+	
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		*thisform.PF.Page5.F1_55.TextRC(lnRow,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(lnRow,46) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+
+		lnRow = lnRow + 1
+	ENDSCAN 
+
+	*IF m.lnI <> 0
+	*	thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) =
+--- #8 @ 33368 ---
+ind.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR5,18,2))
+		*thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,31) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumallpdv,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,46) = ALLTRIM(STR(ttt2.sumallpdv7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,31) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,38) = "0.00"
+		thisfo
+--- #9 @ 200596 ---
+ERTIN
+__FFADRESS__FFTELPAGE5F1_55__FFIPKZN_ZVIT_TMP3LNROWLNSUMALLOTHERLNSUMALLPDVOTHERLNSUMALLPDVOTHER7IPKDATENSUMALL	SUMALLPDV
+SUMALLPDV7SUMALLO
+SUMALLPDVONOMERNCNTTTT1ZN_ZVIT_TMP7TYPESS_RRR_CCC_NCNTCOLINSERTRANGE_IPK	CLOSEDBF1LNSUMALLLNSUMALLPDV	LNSUMALLOLNSUMALLPDVOTTT11ALNRR4LNRR5LNSUNR4LNSUNR5LNSUNR7YYMM	PROSNFONDSUM52SUM55SUMPDV52SUMPDV55ZN_ZVIT_TMP4GRSUM52OF
+SUMPDV52OFTTT2LCSSNAMEPIDATENPODPPRPDVZN_ZVIT_TMP1LND5_T2_SUMALLLND5_T2_SUMALLPDVLND5_T2_SUMALLPDV7
+AUTORECALCRECALCREFRESH. ччччччюTчьыэюTчьыэюTчьыэюTчьCш Cш
+ эюTчьЩ00000000эю?TчьCЩHTINшшш1ффф	ф
+чш1шффф	ф
+цэю%ьCфцэщвю%TчьCCфчш(ффф	ф
+цэююBTчьчы-<?xml version="1.0" encoding="windows-1251"?>чэюЂTчьчыk<DECLAR xmlns:xsi="http://www.w3.
+
+===== lnSunR5 assignments =====
+pat=lnSunR5
+hits=11
+--- #1 @ 26901 ---
+ALLTRIM(STR(ROUND(m.lnsumallpdvo,0)))	
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+2,43) = ALLTRIM(STR(ROUND(0,0)))	
+ENDIF 
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T21",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	STORE 0 TO m.lnRR4, m.lnRR5
+	STORE 0 TO m.lnSunR4, m.lnSunR5,m.lnSunR7
+	lnRow = F1Find.Row 
+	*lnRow = F1Find.Row + 1
+	lnI = 0
+
+*!*		SELECT ipk, yy, mm, SUM(sum52+sum55) as sumall, SUM(sumpdv52) as sumallpdv,SUM(sumpdv55) as sumallpdv7;
+*!*		FROM zn_zvit_tmp4 WHERE (sum52+sum55!=0 AND sumpdv52+sumpdv55!=0);
+*!*		READWRITE;
+*!*		GROUP BY ipk, yy, mm ORDER BY ipk INTO CURSOR ttt1
+
+	SELECT ipk, yy, mm, PrOsnFond, SUM(sum52+sum55) as sumall, SUM(sumpd
+--- #2 @ 28707 ---
+5.F1_55.TextRC(lnRow,26) = ""
+
+		IF PrOsnFond
+			thisform.PF.Page5.F1_55.TextRC(lnRow,31) = "+"
+		ENDIF
+		
+		thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumall,18,2))
+		m.lnSunR4 = m.lnSunR4 + sumall
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,43) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+		lnRow = lnRow + 1
+	ENDSCAN 
+	**** Вставка 7%
+*!*	SELECT('ttt1_7')
+*!*		GO TOP 
+*!*		SCAN 
+*!*			SELECT('ttt1_7')		
+*!*			lnI = lnI + 1
+*!*			IF lnI>1
+*!*				thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,43,3)
+*!*			ENDIF 
+*!*	*		thisform.PF.
+--- #3 @ 28719 ---
+RC(lnRow,26) = ""
+
+		IF PrOsnFond
+			thisform.PF.Page5.F1_55.TextRC(lnRow,31) = "+"
+		ENDIF
+		
+		thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumall,18,2))
+		m.lnSunR4 = m.lnSunR4 + sumall
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,43) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+		lnRow = lnRow + 1
+	ENDSCAN 
+	**** Вставка 7%
+*!*	SELECT('ttt1_7')
+*!*		GO TOP 
+*!*		SCAN 
+*!*			SELECT('ttt1_7')		
+*!*			lnI = lnI + 1
+*!*			IF lnI>1
+*!*				thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,43,3)
+*!*			ENDIF 
+*!*	*		thisform.PF.Page5.F1_55.
+--- #4 @ 29692 ---
+		thisform.PF.Page5.F1_55.TextRC(lnRow,22) = ALLTRIM(STR(yy))
+*!*			*thisform.PF.Page5.F1_55.TextRC(lnRow,26) = ""
+
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumall,18,2))
+*!*			m.lnSunR4 = m.lnSunR4 + sumall
+
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,43) = "0.00"
+*!*			m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv,18,2))
+*!*			lnRow = lnRow + 1
+*!*		ENDSCAN 
+	**IF m.lnI <> 0
+	*	thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T21END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.Text
+--- #5 @ 29704 ---
+F.Page5.F1_55.TextRC(lnRow,22) = ALLTRIM(STR(yy))
+*!*			*thisform.PF.Page5.F1_55.TextRC(lnRow,26) = ""
+
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumall,18,2))
+*!*			m.lnSunR4 = m.lnSunR4 + sumall
+
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,43) = "0.00"
+*!*			m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv,18,2))
+*!*			lnRow = lnRow + 1
+*!*		ENDSCAN 
+	**IF m.lnI <> 0
+	*	thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T21END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Ro
+--- #6 @ 30213 ---
+w,F1Find.Row,.t.)
+	*ENDIF
+
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T21END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) = ALLTRIM(STR(m.lnSunR5,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,43) = ALLTRIM(STR(ttt2.sumallpdv,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,52) = ALLTRIM(m.lcSs)
+
+		FOR i = 2 TO 3
+			thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,31
+--- #7 @ 31001 ---
+orm.PF.Page5.F1_55.TextRC(F1Find.Row+i,43) = "0.00"
+		ENDFOR
+	ENDIF
+
+	closedbf1('ttt1')
+	closedbf1('ttt2')
+
+ENDIF
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	STORE 0 TO m.lnRR4, m.lnRR5
+	STORE 0 TO m.lnSunR4, m.lnSunR5, m.lnSunR7
+	lnRow = F1Find.Row
+	*lnRow = F1Find.Row + 1
+	lnI = 0
+
+*!*		SELECT ipk, YEAR(CTOD(datenpod)) as yy, MONTH(CTOD(datenpod)) as mm, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv;
+*!*		INTO CURSOR ttt1 FROM zn_zvit_tmp1;
+*!*		READWRITE;
+*!*		GROUP BY ipk, yy, mm
+
+	SELECT ipk, YEAR(CTOD(datenpod)) as yy, MONTH(CTOD(datenpod)) as mm,;
+			SUM(sumall) as sumall, SUM(IIF(pprpdv<
+--- #8 @ 32626 ---
+ipk)
+	
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,19) = PADL(ALLTRIM(STR(mm)),2,'0')+'/'+ALLTRIM(STR(yy))
+	
+		thisform.PF.Page5.F1_55.TextRC(lnRow,31) = ALLTRIM(STR(sumall,18,2))
+		m.lnSunR4 = m.lnSunR4 + sumall
+	
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		*thisform.PF.Page5.F1_55.TextRC(lnRow,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(lnRow,46) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+
+		lnRow = lnRow + 1
+	ENDSCAN 
+
+	*IF m.lnI <> 0
+	*	thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF
+--- #9 @ 32638 ---
+	thisform.PF.Page5.F1_55.TextRC(lnRow,19) = PADL(ALLTRIM(STR(mm)),2,'0')+'/'+ALLTRIM(STR(yy))
+	
+		thisform.PF.Page5.F1_55.TextRC(lnRow,31) = ALLTRIM(STR(sumall,18,2))
+		m.lnSunR4 = m.lnSunR4 + sumall
+	
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		*thisform.PF.Page5.F1_55.TextRC(lnRow,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(lnRow,46) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+
+		lnRow = lnRow + 1
+	ENDSCAN 
+
+	*IF m.lnI <> 0
+	*	thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55
+--- #10 @ 33229 ---
+Row,F1Find.Row,.t.)
+	*ENDIF
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR5,18,2))
+		*thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,31) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumallpdv,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,46) = ALLTRIM(STR(ttt2.sumallpdv7
+--- #11 @ 200589 ---
+BUHGALTERTIN
+__FFADRESS__FFTELPAGE5F1_55__FFIPKZN_ZVIT_TMP3LNROWLNSUMALLOTHERLNSUMALLPDVOTHERLNSUMALLPDVOTHER7IPKDATENSUMALL	SUMALLPDV
+SUMALLPDV7SUMALLO
+SUMALLPDVONOMERNCNTTTT1ZN_ZVIT_TMP7TYPESS_RRR_CCC_NCNTCOLINSERTRANGE_IPK	CLOSEDBF1LNSUMALLLNSUMALLPDV	LNSUMALLOLNSUMALLPDVOTTT11ALNRR4LNRR5LNSUNR4LNSUNR5LNSUNR7YYMM	PROSNFONDSUM52SUM55SUMPDV52SUMPDV55ZN_ZVIT_TMP4GRSUM52OF
+SUMPDV52OFTTT2LCSSNAMEPIDATENPODPPRPDVZN_ZVIT_TMP1LND5_T2_SUMALLLND5_T2_SUMALLPDVLND5_T2_SUMALLPDV7
+AUTORECALCRECALCREFRESH. ччччччюTчьыэюTчьыэюTчьыэюTчьCш Cш
+ эюTчьЩ00000000эю?TчьCЩHTINшшш1ффф	ф
+чш1шффф	ф
+цэю%ьCфцэщвю%TчьCCфчш(ффф	ф
+цэююBTчьчы-<?xml version="1.0" encoding="windows-1251"?>чэюЂTчьчыk<DECLAR xmlns:xsi="http://
+
+===== sumallpdv7 to col48 =====
+pat=sumallpdv7
+hits=24
+--- #1 @ 14484 ---
+55.maxRow,52,0)
+select zn_zvit_tmp3
+IF (F1Find.FindNext())
+	lnRow = F1Find.Row
+	lnI = 0
+	lnsumallother = 0.00
+	lnsumallpdvother = 0.00
+	lnsumallpdvother7 = 0.00
+	*SELECT ipk, yy, mm, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv,0.00 as sumallpdv7,;
+	
+* 17.03.2022
+***** Q1_P
+*!*			SUM(sumallo) as sumallo, SUM(sumallpdvo) as sumallpdvo,;
+*!*			CNT(ipk) as ncnt;
+*!*		INTO CURSOR ttt1;
+*!*		FROM zn_zvit_tmp3;
+*!*		GROUP BY ipk , yy, mm
+*!*		SELECT ipknew as ipk, TTOD(daten) as daten, sumall, sumallpdv,0.00 as sumallpdv7,;
+*!*			sumallo,  sumallpdvo,nomer,1 as ncnt;
+*!*			INTO CURSOR
+--- #2 @ 14768 ---
+** Q1_P
+*!*			SUM(sumallo) as sumallo, SUM(sumallpdvo) as sumallpdvo,;
+*!*			CNT(ipk) as ncnt;
+*!*		INTO CURSOR ttt1;
+*!*		FROM zn_zvit_tmp3;
+*!*		GROUP BY ipk , yy, mm
+*!*		SELECT ipknew as ipk, TTOD(daten) as daten, sumall, sumallpdv,0.00 as sumallpdv7,;
+*!*			sumallo,  sumallpdvo,nomer,1 as ncnt;
+*!*			INTO CURSOR ttt1;
+*!*		FROM zn_zvit_tmp6 	order by ipknew
+*!*		*GROUP BY ipk , yy, mm
+*!*		SELECT('ttt1')
+*!*		GO TOP 
+*!*		LOCAL ss, _rrr, _ccc, _ncnt 
+*!*		_rrr = thisform.PF.Page5.F1_55.row 
+*!*		_ccc = thisform.PF.Page5.F1_55.col 
+*!*		_ncnt = 0 
+*!*		SCAN 
+*!*			SELECT('ttt1')
+*
+--- #3 @ 16056 ---
+lnRow,22) = ALLTRIM(nomer)			
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(sumall,18,2))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(sumallpdv,18,2))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+*!*				
+*!*				IF sumallpdv=0
+*!*					m.R22GA=m.R22GA+sumall
+*!*					*якщо експорт то потрібно тут відділяти
+*!*	*				m.R21GA=m.R21GA+sumall
+*!*				ELSE
+*!*					m.R10GA=m.R10GA+sumall
+*!*					m.R10GB=m.R10GB+sumallpdv
+*!*				ENDIF
+*!*				
+*!*				_ipk = ipk
+*!*				****
+*!*	*!*				*це для того щоб біля кожного ЗКПО написати клієн
+--- #4 @ 17682 ---
+ = RGB(0,0,0)
+*!*	*!*				ENDIF 
+*!*				****
+*!*				lnRow = lnRow + 1
+*!*			ELSE			
+*!*				m.lnsumallother = m.lnsumallother + sumall
+*!*				m.lnsumallpdvother = m.lnsumallpdvother + sumallpdv
+*!*				m.lnsumallpdvother7 = m.lnsumallpdvother7 + sumallpdv7
+*!*				IF sumallpdv=0
+*!*					m.R22GA=m.R22GA+sumall
+*!*					*якщо експорт то потрібно тут відділяти
+*!*	*				m.R21GA=m.R21GA+sumall
+*!*				ELSE
+*!*					m.R10GA=m.R10GA+sumall
+*!*					m.R10GB=m.R10GB+sumallpdv
+*!*				ENDIF
+*!*			ENDIF 
+*!*		ENDSCAN 
+*!*		thisform.PF.Page5.F1_55.row = _rrr
+*!*		thisform.PF.Page5.F1_55.col = _ccc
+*!*		*
+--- #5 @ 19284 ---
+sform.PF.Page5.F1_55.row = lnRow
+*!*					thisform.PF.Page5.F1_55.col = 52
+*!*					thisform.PF.Page5.F1_55.FontBold = .t.
+*!*					thisform.PF.Page5.F1_55.FontColor = RGB(128,128,0)
+*!*				ENDIF 	
+	
+	SELECT ipk, daten, sumall, sumallpdv, 0.00 as sumallpdv7,;
+		0.00 as sumallo, 0.00 as sumallpdvo, nomer,1 as ncnt;
+		INTO CURSOR ttt1;
+	FROM zn_zvit_tmp7 WHERE type=1 ORDER BY ipk
+	
+	SELECT('ttt1')
+	GO TOP 
+	LOCAL ss, _rrr, _ccc, _ncnt 
+	_rrr = thisform.PF.Page5.F1_55.row 
+	_ccc = thisform.PF.Page5.F1_55.col 
+	_ncnt = 0 
+	SCAN 
+		SELECT('ttt1')
+		IF  1=1
+			lnI = lnI + 1
+			IF m.R10GA<>0
+--- #6 @ 20305 ---
+1_55.TextRC(lnRow,22) = ALLTRIM(nomer)			
+			thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(sumall,18,2))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(sumallpdv,18,2))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+			
+			IF sumallpdv=0
+				m.R22GA=m.R22GA+sumall
+			ELSE
+				m.R10GA=m.R10GA+sumall
+				m.R10GB=m.R10GB+sumallpdv
+			ENDIF
+			
+			_ipk = ipk
+			lnRow = lnRow + 1
+		ELSE			
+			m.lnsumallother = m.lnsumallother + sumall
+			m.lnsumallpdvother = m.lnsumallpdvother + sumallpdv
+			m.lnsumallpdvother7 = m.lnsumallpdvother7 + sumallpd
+--- #7 @ 20657 ---
+mall
+				m.R10GB=m.R10GB+sumallpdv
+			ENDIF
+			
+			_ipk = ipk
+			lnRow = lnRow + 1
+		ELSE			
+			m.lnsumallother = m.lnsumallother + sumall
+			m.lnsumallpdvother = m.lnsumallpdvother + sumallpdv
+			m.lnsumallpdvother7 = m.lnsumallpdvother7 + sumallpdv7
+			IF sumallpdv=0
+				m.R22GA=m.R22GA+sumall
+			ELSE
+				m.R10GA=m.R10GA+sumall
+				m.R10GB=m.R10GB+sumallpdv
+			ENDIF
+		ENDIF 
+	ENDSCAN 
+	thisform.PF.Page5.F1_55.row = _rrr
+	thisform.PF.Page5.F1_55.col = _ccc
+	closedbf1('aaa1')
+***** Q1_K	
+	
+	m.lnsumall = 0.00
+	m.lnsumallpdv = 0.00
+	m.lnsumallo = 0.00
+	m.lnsumallpdvo = 0.00
+	SEL
+--- #8 @ 22157 ---
+hisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	lnRow = F1Find.Row 
+	lnI = 0
+	lnsumallother = 0.00
+	lnsumallpdvother = 0.00
+	lnsumallpdvother7 = 0.00
+	*SELECT ipk, yy, mm, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv,0.00 as sumallpdv7,;
+		SUM(sumallo) as sumallo, SUM(sumallpdvo) as sumallpdvo,;
+		CNT(ipk) as ncnt;
+	INTO CURSOR ttt1;
+	FROM zn_zvit_tmp3;
+	GROUP BY ipk , yy, mm
+	
+* 17.03.2022
+***** Q2_P
+*!*		SELECT ipk, datenpod, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv ,0.00 as sumallpdv7,;
+*!*			nomer,1 as ncnt;
+*!*			INTO CURSOR ttt11a;
+*!*		FROM zn_zvit_t
+--- #9 @ 22433 ---
+o) as sumallo, SUM(sumallpdvo) as sumallpdvo,;
+		CNT(ipk) as ncnt;
+	INTO CURSOR ttt1;
+	FROM zn_zvit_tmp3;
+	GROUP BY ipk , yy, mm
+	
+* 17.03.2022
+***** Q2_P
+*!*		SELECT ipk, datenpod, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv ,0.00 as sumallpdv7,;
+*!*			nomer,1 as ncnt;
+*!*			INTO CURSOR ttt11a;
+*!*		FROM zn_zvit_tmp group by ipk, datenpod,nomer order by ipk
+*!*		*GROUP BY ipk , yy, mm
+*!*		SELECT('ttt11a')
+*!*		GO TOP 
+*!*		LOCAL ss, _rrr, _ccc, _ncnt 
+*!*		_rrr = thisform.PF.Page5.F1_55.row 
+*!*		_ccc = thisform.PF.Page5.F1_55.col 
+*!*		_ncnt = 0 
+*!*		SCAN  FOR sumall>0.04
+
+--- #10 @ 23607 ---
+lnRow,22) = ALLTRIM(nomer)			
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(sumall,18,2))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(sumallpdv,18,2))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+*!*			
+*!*							
+*!*				_ipk = ipk
+*!*			
+*!*				lnRow = lnRow + 1
+*!*			
+*!*		ENDSCAN 
+*!*		thisform.PF.Page5.F1_55.row = _rrr
+*!*		thisform.PF.Page5.F1_55.col = _ccc
+*!*		
+*!*				closedbf1('aaa1')
+*!*				SELECT distinct namep FROM zn_zvit_tmp WHERE sumall>0 and( EMPTY(ALLTRIM(ipk)) OR LEN(ALLTRIM(ipk))<10 OR alltrim(ipk)=='40
+--- #11 @ 24687 ---
+form.PF.Page5.F1_55.row = lnRow
+*!*					thisform.PF.Page5.F1_55.col = 52
+*!*					thisform.PF.Page5.F1_55.FontBold = .t.
+*!*					thisform.PF.Page5.F1_55.FontColor = RGB(128,128,0)
+*!*					ENDIF 
+
+
+	SELECT ipk, daten, sumall, sumallpdv, 0.00 as sumallpdv7,;
+		nomer,1 as ncnt;
+		INTO CURSOR ttt11a;
+	FROM zn_zvit_tmp7 WHERE type<>1 ORDER BY ipk
+	
+	
+	SELECT('ttt11a')
+	GO TOP 
+	LOCAL ss, _rrr, _ccc, _ncnt 
+	_rrr = thisform.PF.Page5.F1_55.row 
+	_ccc = thisform.PF.Page5.F1_55.col 
+	_ncnt = 0 
+	SCAN  &&FOR sumall>0.04
+		SELECT('ttt11a')
+			lnI = lnI + 1
+			IF lnI>1
+			thisform.PF.Page5.F1_
+--- #12 @ 25678 ---
+5.F1_55.TextRC(lnRow,22) = ALLTRIM(nomer)
+			thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(sumall,18,2))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(sumallpdv,18,2))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+						
+			_ipk = ipk
+		
+			lnRow = lnRow + 1
+		
+	ENDSCAN 
+	thisform.PF.Page5.F1_55.row = _rrr
+	thisform.PF.Page5.F1_55.col = _ccc
+			closedbf1('aaa1')
+***** Q2_K
+			
+	m.lnsumall = 0.00
+	m.lnsumallpdv = 0.00
+	m.lnsumallo = 0.00
+	m.lnsumallpdvo = 0.00
+	SELECT('ttt11a')	
+	CALCULATE SUM(sumall),SUM(sumallpdv) TO m.lnsumall,m.ln
+--- #13 @ 27077 ---
+1Find.FindNext())
+	STORE 0 TO m.lnRR4, m.lnRR5
+	STORE 0 TO m.lnSunR4, m.lnSunR5,m.lnSunR7
+	lnRow = F1Find.Row 
+	*lnRow = F1Find.Row + 1
+	lnI = 0
+
+*!*		SELECT ipk, yy, mm, SUM(sum52+sum55) as sumall, SUM(sumpdv52) as sumallpdv,SUM(sumpdv55) as sumallpdv7;
+*!*		FROM zn_zvit_tmp4 WHERE (sum52+sum55!=0 AND sumpdv52+sumpdv55!=0);
+*!*		READWRITE;
+*!*		GROUP BY ipk, yy, mm ORDER BY ipk INTO CURSOR ttt1
+
+	SELECT ipk, yy, mm, PrOsnFond, SUM(sum52+sum55) as sumall, SUM(sumpdv52) as sumallpdv,SUM(sumpdv55) as sumallpdv7;
+		FROM zn_zvit_tmp4 WHERE (sum52+sum55!=0 AND sumpdv52+sumpdv55!=0);
+		READWRITE
+--- #14 @ 27343 ---
+		FROM zn_zvit_tmp4 WHERE (sum52+sum55!=0 AND sumpdv52+sumpdv55!=0);
+*!*		READWRITE;
+*!*		GROUP BY ipk, yy, mm ORDER BY ipk INTO CURSOR ttt1
+
+	SELECT ipk, yy, mm, PrOsnFond, SUM(sum52+sum55) as sumall, SUM(sumpdv52) as sumallpdv,SUM(sumpdv55) as sumallpdv7;
+		FROM zn_zvit_tmp4 WHERE (sum52+sum55!=0 AND sumpdv52+sumpdv55!=0);
+		READWRITE;
+		GROUP BY ipk, yy, mm, PrOsnFond ORDER BY ipk INTO CURSOR ttt1
+	
+	SELECT 1 as gr, SUM(sum52of) as sumall, SUM(sumpdv52of) as sumallpdv; 
+	FROM zn_zvit_tmp4 WHERE (sum52of!=0 AND sumpdv52of!=0);
+	INTO CURSOR ttt2;
+	READWRITE;
+	GROUP BY gr
+
+	m.lcSs = ""
+	
+--- #15 @ 28799 ---
+tRC(lnRow,38) = ALLTRIM(STR(sumall,18,2))
+		m.lnSunR4 = m.lnSunR4 + sumall
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,43) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+		lnRow = lnRow + 1
+	ENDSCAN 
+	**** Вставка 7%
+*!*	SELECT('ttt1_7')
+*!*		GO TOP 
+*!*		SCAN 
+*!*			SELECT('ttt1_7')		
+*!*			lnI = lnI + 1
+*!*			IF lnI>1
+*!*				thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,43,3)
+*!*			ENDIF 
+*!*	*		thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,48,3)
+
+
+===== PROCEDURE loaddata =====
+PROCEDURE loaddata
+LOCAL __datenfrom,lnresult,lni
+m.__datenfrom=datetime(thisform._yy1_,thisform._MM1_,1,0,0,0)
+
+LOCAL R161GA,R161GB,R1611GA,R1614GA
+STORE 0 TO m.R161GA,m.R161GB,m.R1611GA,m.R1614GA
+
+LOCAL R81GA,R81GB,R811GA
+STORE 0 TO m.R81GA,m.R81GB,m.R811GA
+
+LOCAL R10GA,R10GB,R22GA,R21GA,R50GA
+STORE 0 TO m.R10GA,m.R10GB,m.R22GA,m.R21GA,m.R50GA
+
+LOCAL R101GA,R101GB,R102GA
+store 0 TO m.R101GA,m.R101GB,m.R102GA
+
+do dgr_box with 2, 'Триває завантаження розшифровки рахунку зачекайте 30 секунд','...'
+*m.lnresult=prSQLEXEC(@hConnect,'exec Buh.dbo.us_Buh_Zvit_Tovar '+all2sqlstr(m.__FFCodeFirm)+',29,0,'+all2sqlstr(m.__datenfrom),'zn_zvit_tmp')
+*MESSAGEBOX('exec Buh.dbo.us_Buh_Zvit_Tovar29 '+all2sqlstr(m.__FFCodeFirm)+','+all2sqlstr(m.__datenfrom))
+m.lnresult=prSQLEXEC(@hConnect,'exec Buh.dbo.us_Buh_Zvit_Tovar29_202102 '+all2sqlstr(m.__FFCodeFirm)+','+all2sqlstr(m.__datenfrom),'zn_zvit_tmp')
+do dgr_mov
+if m.lnresult>=0
+	if !used('zn_zvit_tmp') OR !used('zn_zvit_tmp4')
+		MESSAGEBOX("Сервер у завантаженні відмовив!"+chr(13)+;
+			"Поновіть дані з сервера!",0 + 16 + 0,'Сервер')
+		do dgr_end
+		thisform.release
+		return
+	ENDIF
+ENDIF
+do dgr_end
+*zn_zvit_tmp список всіх додатків 2 до Розхідної накладної
+*після 2010 року сюди попадають документи тільки БЕЗ двох галочок,
+*потім додатки 2 а також ті звичайні податкові розхідні накладні з одною першою галочкою
+*and not(F.isownerror=1 and F.isutochpdv=1)
+*and (F.type=2 or 
+*	(F.type=1 and F.isownerror=1 and F.isutochpdv=0))
+*zn_zvit_tmp1 Список додатків до податкових прихідних накладних
+*	після 2010 року сюди попадають всі документи без двох галочок
+*	а також розрахунок коригування і всі інші з одною галочкою*/
+
+****завантаження данних в гріди
+IF thisform.obj2.cboStan.ListIndex = 1
+	*звітна	
+	*thisform.PF.Page3.F1_3.TextRC(4,40)="Х"
+	*thisform.PF.Page4.F1_4.TextRC(4,40)="Х"
+	
+	F1Find = thisform.PF.Page1.F1_1.DefineSearch("HZ_011",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page1.F1_1.TextRC(F1Find.Row,40)="Х"
+	ENDIF
+ENDIF 
+IF thisform.obj2.cboStan.ListIndex = 2
+	*звітна нова
+	*thisform.PF.Page3.F1_3.TextRC(5,40)="Х"
+	*thisform.PF.Page4.F1_4.TextRC(5,40)="Х"
+
+	F1Find = thisform.PF.Page1.F1_1.DefineSearch("HZN",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page1.F1_1.TextRC(F1Find.Row,40)="Х"	
+	ENDIF
+ENDIF 
+
+*********************************************************************************************************
+*Page1***************************************************************************************************
+*********************************************************************************************************
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HZY",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,27) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),1,1)
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,29) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),2,1)
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,31) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),3,1)
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,33) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),4,1)
+
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,43) = SUBSTR(PADL(ALLTRIM(STR(thisform._mm1_)),2,"0"),1,1)
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,45) = SUBSTR(PADL(ALLTRIM(STR(thisform._mm1_)),2,"0"),2,1)
+ENDIF
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HNAME",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,9) = ALLTRIM(m.__FFNameFirm) &&платник
+ENDIF
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HTIN",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,14) = Substr(m.__FFZkpo,1,1) &&ЄДПРПОУ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,16) = Substr(m.__FFZkpo,2,1) &&ЄДПРПОУ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,18) = Substr(m.__FFZkpo,3,1) &&ЄДПРПОУ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,20) = Substr(m.__FFZkpo,4,1) &&ЄДПРПОУ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,22) = Substr(m.__FFZkpo,5,1) &&ЄДПРПОУ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,24) = Substr(m.__FFZkpo,6,1) &&ЄДПРПОУ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,26) = Substr(m.__FFZkpo,7,1) &&ЄДПРПОУ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,28) = Substr(m.__FFZkpo,8,1) &&ЄДПРПОУ
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,40) = m.__FFZkpo &&ЄДПРПОУ
+ENDIF
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HNPDV",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,14) = Substr(__FFipk,1,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,16) = Substr(__FFipk,2,1) && інд.номер платника ПДВ
+	**.PF.Page1.F1_1.TextRC(F1Find.Row,18) = Substr(__FFipk,3,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,20) = Substr(__FFipk,4,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,22) = Substr(__FFipk,5,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,24) = Substr(__FFipk,6,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,26) = Substr(__FFipk,7,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,28) = Substr(__FFipk,8,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,30) = Substr(__FFipk,9,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,32) = Substr(__FFipk,10,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,34) = Substr(__FFipk,11,1) && інд.номер платника ПДВ
+	*thisform.PF.Page1.F1_1.TextRC(F1Find.Row,36) = Substr(__FFipk,12,1) && інд.номер платника ПДВ
+
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,40) = __FFSpdv && номер свідоцтва платника ПДВ
+	
+ENDIF
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("D_FILL",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,11) = SUBSTR(PADL(ALLTRIM(STR(DAY(thisform.datazvit),2,0)),2,'0'),1,1) && дата подання
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,13) = SUBSTR(PADL(ALLTRIM(STR(DAY(thisform.datazvit),2,0)),2,'0'),2,1) && дата подання
+
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,16) = SUBSTR(PADL(ALLTRIM(STR(MONTH(thisform.datazvit),2,0)),2,'0'),1,1) && дата подання
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,18) = SUBSTR(PADL(ALLTRIM(STR(MONTH(thisform.datazvit),2,0)),2,'0'),2,1) && дата подання
+
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,21) = SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),1,1) && дата подання
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,23) = SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),2,1) && дата подання
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,25) = SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),3,1) && дата подання
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,27) = SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),4,1) && дата подання
+ENDIF
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HZIP",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0) 
+IF (F1Find.FindNext())
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,38) = '46007' && index
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row+1,38) = '0352475222' && tel
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row+1,3) = 'вулиця Збаразька, буд. 18, м. ТЕРНОПІЛЬ, ТЕРНОПІЛЬСЬКА обл., 46007'
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row+2,38) = '0352475222' && fax
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row+3,38) = 'pzvit@ars.ua' && email
+ENDIF 
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HSTI",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0) 
+IF (F1Find.FindNext())
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,11) = 'ГОЛОВНЕ УПРАВЛІННЯ ДПС У ТЕРНОПІЛЬСЬКІЙ ОБЛАСТІ, ТЕРНОПІЛЬСЬКЕ УПРАВЛІННЯ, ТЕРНОПІЛЬСЬКА ДПІ ( (М.ТЕРНОПІЛЬ)' && index
+ENDIF 
+
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HFILL",1,1,49,thisform.PF.Page1.F1_1.maxRow,52,0)
+IF (F1Find.FindNext())
+&& дата подання
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,14) = SUBSTR(PADL(ALLTRIM(STR(DAY(thisform.datazvit),2,0)),2,'0'),1,1)+;
+			SUBSTR(PADL(ALLTRIM(STR(DAY(thisform.datazvit),2,0)),2,'0'),2,1) +;
+			SUBSTR(PADL(ALLTRIM(STR(MONTH(thisform.datazvit),2,0)),2,'0'),1,1)+;
+			SUBSTR(PADL(ALLTRIM(STR(MONTH(thisform.datazvit),2,0)),2,'0'),2,1)+;
+			SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),1,1)+;
+			SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),2,1)+;
+			SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),3,1)+;
+			SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),4,1)
+ENDIF
+
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HBOS",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,14) = thisform.pcdirector &&керівник
+ENDIF
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HBUH",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,14) = thisform.pcbuhgalter &&бухгалтер
+ENDIF
+
+*код директора пыдприэмства
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HKBOS",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+*	FOR m.lni=1 TO 10
+		thisform.PF.Page1.F1_1.TextRC(F1Find.Row,14)=thisform.pcdirectortin
+*	ENDFOR
+ENDIF
+
+*код бухгалтера пыдприэмства
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HKBUH",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+*	FOR m.lni=1 TO 10
+		thisform.PF.Page1.F1_1.TextRC(F1Find.Row,14)= thisform.pcbuhgaltertin
+*	ENDFOR
+ENDIF
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HADRES",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,3) = __FFAdress && адреса
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,38) = __FFTel && телефон
+ENDIF
+
+F1Find = thisform.PF.Page1.F1_1.DefineSearch("HNAMEPOD",1,1,49,thisform.PF.Page1.F1_1.maxRow,49,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,1) = "Тернопільській ОДПІ" && подається до
+ENDIF
+
+******************************5555555555555555555555555555555555555
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HZY",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	*8
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,27) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),1,1)
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,29) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),2,1)
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),3,1)
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,33) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),4,1)
+
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) = SUBSTR(PADL(ALLTRIM(STR(thisform._mm1_)),2,"0"),1,2)
+*	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,45) = SUBSTR(PADL(ALLTRIM(STR(thisform._mm1_)),2,"0"),2,1)
+ELSE 
+MESSAGEBOX( 'DefineSearch("HZY", not   ')	
+ENDIF
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HNAME",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,9) = ALLTRIM(m.__FFNameFirm) &&платник
+	
+ENDIF
+
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HTIN",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	*17
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = __FFZkpo
+ENDIF
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HNPDV",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	*36
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = __FFipk && інд.номер платника ПДВ
+ENDIF
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("D_FILL",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,11) = SUBSTR(PADL(ALLTRIM(STR(DAY(thisform.datazvit),2,0)),2,'0'),1,1) && дата подання
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,13) = SUBSTR(PADL(ALLTRIM(STR(DAY(thisform.datazvit),2,0)),2,'0'),2,1) && дата подання
+
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,16) = SUBSTR(PADL(ALLTRIM(STR(MONTH(thisform.datazvit),2,0)),2,'0'),1,1) && дата подання
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,18) = SUBSTR(PADL(ALLTRIM(STR(MONTH(thisform.datazvit),2,0)),2,'0'),2,1) && дата подання
+
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,21) = SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),1,1) && дата подання
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,23) = SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),2,1) && дата подання
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,25) = SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),3,1) && дата подання
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,27) = SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),4,1) && дата подання
+endif
+
+
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,23) = thisform.pcdirector &&керівник
+ENDIF
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HKBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,23) = thisform.pcdirectortin &&керівник
+ENDIF
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HBUH",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,23) = thisform.pcbuhgalter&&бухгалтер
+ENDIF
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HKBUH",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,23) = thisform.pcbuhgaltertin&&бухгалтер
+ENDIF
+
+*Додаток 5 таблиці 1 Розхідні податкові накладні
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("LL10",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+select zn_zvit_tmp3
+IF (F1Find.FindNext())
+	lnRow = F1Find.Row
+	lnI = 0
+	lnsumallother = 0.00
+	lnsumallpdvother = 0.00
+	lnsumallpdvother7 = 0.00
+	*SELECT ipk, yy, mm, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv,0.00 as sumallpdv7,;
+	
+* 17.03.2022
+***** Q1_P
+*!*			SUM(sumallo) as sumallo, SUM(sumallpdvo) as sumallpdvo,;
+*!*			CNT(ipk) as ncnt;
+*!*		INTO CURSOR ttt1;
+*!*		FROM zn_zvit_tmp3;
+*!*		GROUP BY ipk , yy, mm
+*!*		SELECT ipknew as ipk, TTOD(daten) as daten, sumall, sumallpdv,0.00 as sumallpdv7,;
+*!*			sumallo,  sumallpdvo,nomer,1 as ncnt;
+*!*			INTO CURSOR ttt1;
+*!*		FROM zn_zvit_tmp6 	order by ipknew
+*!*		*GROUP BY ipk , yy, mm
+*!*		SELECT('ttt1')
+*!*		GO TOP 
+*!*		LOCAL ss, _rrr, _ccc, _ncnt 
+*!*		_rrr = thisform.PF.Page5.F1_55.row 
+*!*		_ccc = thisform.PF.Page5.F1_55.col 
+*!*		_ncnt = 0 
+*!*		SCAN 
+*!*			SELECT('ttt1')
+*!*			*тут ті що мають ЗКПО коди	
+*!*	*		400000000000
+*!*			IF  1=1
+*!*			*NOT EMPTY(ALLTRIM(ipk)) AND LEN(ALLTRIM(ipk))>=10 AND ALLTRIM(ipk)!='400000000000' AND ALLTRIM(ipk)!='100000000000'
+*!*				lnI = lnI + 1
+*!*				IF m.R10GA<>0
+*!*					thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,48,3)
+*!*				ENDIF 
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,1) = ALLTRIM(STR(lni))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,3) = ALLTRIM(ipk)
+*!*				datens=DTOS(daten)
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,17) = SUBSTR(datens,7,2)+SUBSTR(datens,5,2)+SUBSTR(datens,1,4)
+*!*				*thisform.PF.Page5.F1_55.TextRC(lnRow,26) = '.'
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,22) = ALLTRIM(nomer)			
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(sumall,18,2))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(sumallpdv,18,2))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+*!*				
+*!*				IF sumallpdv=0
+*!*					m.R22GA=m.R22GA+sumall
+*!*					*якщо експорт то потрібно тут відділяти
+*!*	*				m.R21GA=m.R21GA+sumall
+*!*				ELSE
+*!*					m.R10GA=m.R10GA+sumall
+*!*					m.R10GB=m.R10GB+sumallpdv
+*!*				ENDIF
+*!*				
+*!*				_ipk = ipk
+*!*				****
+*!*	*!*				*це для того щоб біля кожного ЗКПО написати клієнтів
+*!*	*!*				closedbf1('aaa1')
+*!*	*!*				SELECT distinct IIF(ipknew='100000000000',"  Роздрібний покупець",namep) as namep FROM zn_zvit_tmp6 WHERE ipknew==_ipk INTO CURSOR aaa1
+*!*	*!*				ss=""
+*!*	*!*				SELECT('aaa1')
+*!*	*!*				GO TOP 
+*!*	*!*				SCAN
+*!*	*!*					IF EMPTY(ss)
+*!*	*!*						ss = ALLTRIM(namep)
+*!*	*!*					ELSE
+*!*	*!*						ss = ss + '; ' +ALLTRIM(namep)
+*!*	*!*					ENDIF 
+*!*	*!*				ENDSCAN 			
+*!*	*!*				closedbf1('aaa1')
+*!*	*!*				SELECT('ttt1')
+*!*	*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,52) = ALLTRIM(STR(ncnt)) + " - " + ss
+*!*	*!*				IF ncnt>1
+*!*	*!*					thisform.PF.Page5.F1_55.row = lnRow
+*!*	*!*					thisform.PF.Page5.F1_55.col = 52
+*!*	*!*					thisform.PF.Page5.F1_55.FontBold = .t.
+*!*	*!*					thisform.PF.Page5.F1_55.FontColor = RGB(200,0,0)
+*!*	*!*				ELSE
+*!*	*!*					thisform.PF.Page5.F1_55.row = lnRow
+*!*	*!*					thisform.PF.Page5.F1_55.col = 52
+*!*	*!*					thisform.PF.Page5.F1_55.FontBold = .f.
+*!*	*!*					thisform.PF.Page5.F1_55.FontColor = RGB(0,0,0)
+*!*	*!*				ENDIF 
+*!*				****
+*!*				lnRow = lnRow + 1
+*!*			ELSE			
+*!*				m.lnsumallother = m.lnsumallother + sumall
+*!*				m.lnsumallpdvother = m.lnsumallpdvother + sumallpdv
+*!*				m.lnsumallpdvother7 = m.lnsumallpdvother7 + sumallpdv7
+*!*				IF sumallpdv=0
+*!*					m.R22GA=m.R22GA+sumall
+*!*					*якщо експорт то потрібно тут відділяти
+*!*	*				m.R21GA=m.R21GA+sumall
+*!*				ELSE
+*!*					m.R10GA=m.R10GA+sumall
+*!*					m.R10GB=m.R10GB+sumallpdv
+*!*				ENDIF
+*!*			ENDIF 
+*!*		ENDSCAN 
+*!*		thisform.PF.Page5.F1_55.row = _rrr
+*!*		thisform.PF.Page5.F1_55.col = _ccc
+*!*		****інші ті що кодів немають 
+*!*		*thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)	
+*!*		*thisform.PF.Page5.F1_55.TextRC(lnRow,33) = ALLTRIM(STR(lnsumallother,18,2))
+*!*		*thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(lnsumallpdvother,18,2))
+*!*		*thisform.PF.Page5.F1_55.TextRC(lnRow,43) = ALLTRIM(STR(lnsumallpdvother7,18,2))
+*!*				closedbf1('aaa1')
+*!*				SELECT distinct namep FROM zn_zvit_tmp3 WHERE EMPTY(ALLTRIM(ipk)) OR LEN(ALLTRIM(ipk))<10 OR alltrim(ipk)=='400000000000' OR alltrim(ipk)=='100000000000' INTO CURSOR aaa1
+*!*				ss=""
+*!*				SELECT('aaa1')
+*!*				_ncnt = 0
+*!*				CALCULATE CNT() TO _ncnt
+*!*				GO TOP 
+*!*				SCAN
+*!*					IF EMPTY(ss)
+*!*						ss = ALLTRIM(namep)
+*!*					ELSE
+*!*						ss = ss + '; ' +ALLTRIM(namep)
+*!*					ENDIF 
+*!*				ENDSCAN 			
+*!*				closedbf1('aaa1')	
+*!*				IF 	R10GA>0 OR m.R10GB>0 OR m.R22GA>0
+*!*					thisform.PF.Page5.F1_55.TextRC(lnRow,52) = ALLTRIM(STR(_ncnt)) + " - " + ss
+*!*					thisform.PF.Page5.F1_55.row = lnRow
+*!*					thisform.PF.Page5.F1_55.col = 52
+*!*					thisform.PF.Page5.F1_55.FontBold = .t.
+*!*					thisform.PF.Page5.F1_55.FontColor = RGB(128,128,0)
+*!*				ENDIF 	
+	
+	SELECT ipk, daten, sumall, sumallpdv, 0.00 as sumallpdv7,;
+		0.00 as sumallo, 0.00 as sumallpdvo, nomer,1 as ncnt;
+		INTO CURSOR ttt1;
+	FROM zn_zvit_tmp7 WHERE type=1 ORDER BY ipk
+	
+	SELECT('ttt1')
+	GO TOP 
+	LOCAL ss, _rrr, _ccc, _ncnt 
+	_rrr = thisform.PF.Page5.F1_55.row 
+	_ccc = thisform.PF.Page5.F1_55.col 
+	_ncnt = 0 
+	SCAN 
+		SELECT('ttt1')
+		IF  1=1
+			lnI = lnI + 1
+			IF m.R10GA<>0
+				thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,48,3)
+			ENDIF 
+			thisform.PF.Page5.F1_55.TextRC(lnRow,1) = ALLTRIM(STR(lni))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,3) = ALLTRIM(ipk)
+			thisform.PF.Page5.F1_55.TextRC(lnRow,17) = RIGHT("0"+ALLTRIM(STR(DAY(daten))),2)+"."+;
+														RIGHT("0"+ALLTRIM(STR(MONTH(daten))),2)+"."+;
+														ALLTRIM(STR(YEAR(daten)))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,22) = ALLTRIM(nomer)			
+			thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(sumall,18,2))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(sumallpdv,18,2))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+			
+			IF sumallpdv=0
+				m.R22GA=m.R22GA+sumall
+			ELSE
+				m.R10GA=m.R10GA+sumall
+				m.R10GB=m.R10GB+sumallpdv
+			ENDIF
+			
+			_ipk = ipk
+			lnRow = lnRow + 1
+		ELSE			
+			m.lnsumallother = m.lnsumallother + sumall
+			m.lnsumallpdvother = m.lnsumallpdvother + sumallpdv
+			m.lnsumallpdvother7 = m.lnsumallpdvother7 + sumallpdv7
+			IF sumallpdv=0
+				m.R22GA=m.R22GA+sumall
+			ELSE
+				m.R10GA=m.R10GA+sumall
+				m.R10GB=m.R10GB+sumallpdv
+			ENDIF
+		ENDIF 
+	ENDSCAN 
+	thisform.PF.Page5.F1_55.row = _rrr
+	thisform.PF.Page5.F1_55.col = _ccc
+	closedbf1('aaa1')
+***** Q1_K	
+	
+	m.lnsumall = 0.00
+	m.lnsumallpdv = 0.00
+	m.lnsumallo = 0.00
+	m.lnsumallpdvo = 0.00
+	SELECT('ttt1')	
+	CALCULATE SUM(sumall),SUM(sumallpdv),SUM(sumallo),SUM(sumallpdvo) TO m.lnsumall,m.lnsumallpdv,m.lnsumallo,m.lnsumallpdvo
+*	thisform.PF.Page5.F1_55.TextRC(lnRow+1,33) = ALLTRIM(STR(ROUND(m.lnsumall,0)))
+*	thisform.PF.Page5.F1_55.TextRC(lnRow+1,43) = ALLTRIM(STR(ROUND(m.lnsumallpdv,0)))	
+
+	thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(ROUND(m.lnsumall,0)))
+	thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(ROUND(m.lnsumallpdv,0)))	
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+1,43) = ALLTRIM(STR(ROUND(0,0)))	
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+2,33) = ALLTRIM(STR(ROUND(m.lnsumallo,0)))
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+2,38) = ALLTRIM(STR(ROUND(m.lnsumallpdvo,0)))	
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+2,43) = ALLTRIM(STR(ROUND(0,0)))	
+ENDIF 
+
+*** Друга частина таблиці 1.2
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("LL121",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	lnRow = F1Find.Row 
+	lnI = 0
+	lnsumallother = 0.00
+	lnsumallpdvother = 0.00
+	lnsumallpdvother7 = 0.00
+	*SELECT ipk, yy, mm, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv,0.00 as sumallpdv7,;
+		SUM(sumallo) as sumallo, SUM(sumallpdvo) as sumallpdvo,;
+		CNT(ipk) as ncnt;
+	INTO CURSOR ttt1;
+	FROM zn_zvit_tmp3;
+	GROUP BY ipk , yy, mm
+	
+* 17.03.2022
+***** Q2_P
+*!*		SELECT ipk, datenpod, SUM(sumall) as sumall, SUM(sumallpdv) as sumallpdv ,0.00 as sumallpdv7,;
+*!*			nomer,1 as ncnt;
+*!*			INTO CURSOR ttt11a;
+*!*		FROM zn_zvit_tmp group by ipk, datenpod,nomer order by ipk
+*!*		*GROUP BY ipk , yy, mm
+*!*		SELECT('ttt11a')
+*!*		GO TOP 
+*!*		LOCAL ss, _rrr, _ccc, _ncnt 
+*!*		_rrr = thisform.PF.Page5.F1_55.row 
+*!*		_ccc = thisform.PF.Page5.F1_55.col 
+*!*		_ncnt = 0 
+*!*		SCAN  FOR sumall>0.04
+*!*			SELECT('ttt11a')
+*!*		
+*!*				lnI = lnI + 1
+*!*				IF lnI>1
+*!*				thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,48,3)
+*!*				ENDIF 
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,1) = ALLTRIM(STR(lni))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,3) = ALLTRIM(ipk)
+*!*				*thisform.PF.Page5.F1_55.TextRC(lnRow,17) = ALLTRIM(datenpod)
+*!*				 thisform.PF.Page5.F1_55.TextRC(lnRow,17) = SUBSTR(datenpod,1,2)+SUBSTR(datenpod,4,2)+'20'+SUBSTR(datenpod,7,2)
+*!*				*thisform.PF.Page5.F1_55.TextRC(lnRow,26) = '.'
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,22) = ALLTRIM(nomer)			
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(sumall,18,2))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(sumallpdv,18,2))
+*!*				thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+*!*			
+*!*							
+*!*				_ipk = ipk
+*!*			
+*!*				lnRow = lnRow + 1
+*!*			
+*!*		ENDSCAN 
+*!*		thisform.PF.Page5.F1_55.row = _rrr
+*!*		thisform.PF.Page5.F1_55.col = _ccc
+*!*		
+*!*				closedbf1('aaa1')
+*!*				SELECT distinct namep FROM zn_zvit_tmp WHERE sumall>0 and( EMPTY(ALLTRIM(ipk)) OR LEN(ALLTRIM(ipk))<10 OR alltrim(ipk)=='400000000000' OR alltrim(ipk)=='100000000000') INTO CURSOR aaa1
+*!*				ss=""
+*!*				SELECT('aaa1')
+*!*				_ncnt = 0
+*!*				CALCULATE CNT() TO _ncnt
+*!*				GO TOP 
+*!*				SCAN
+*!*					IF EMPTY(ss)
+*!*						ss = ALLTRIM(namep)
+*!*					ELSE
+*!*						ss = ss + '; ' +ALLTRIM(namep)
+*!*					ENDIF 
+*!*				ENDSCAN 			
+*!*				closedbf1('aaa1')	
+*!*					IF _ncnt>0
+*!*				    thisform.PF.Page5.F1_55.TextRC(lnRow,52) = ALLTRIM(STR(_ncnt)) + " - " + ss
+*!*					thisform.PF.Page5.F1_55.row = lnRow
+*!*					thisform.PF.Page5.F1_55.col = 52
+*!*					thisform.PF.Page5.F1_55.FontBold = .t.
+*!*					thisform.PF.Page5.F1_55.FontColor = RGB(128,128,0)
+*!*					ENDIF 
+
+
+	SELECT ipk, daten, sumall, sumallpdv, 0.00 as sumallpdv7,;
+		nomer,1 as ncnt;
+		INTO CURSOR ttt11a;
+	FROM zn_zvit_tmp7 WHERE type<>1 ORDER BY ipk
+	
+	
+	SELECT('ttt11a')
+	GO TOP 
+	LOCAL ss, _rrr, _ccc, _ncnt 
+	_rrr = thisform.PF.Page5.F1_55.row 
+	_ccc = thisform.PF.Page5.F1_55.col 
+	_ncnt = 0 
+	SCAN  &&FOR sumall>0.04
+		SELECT('ttt11a')
+			lnI = lnI + 1
+			IF lnI>1
+			thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,48,3)
+			ENDIF
+			thisform.PF.Page5.F1_55.TextRC(lnRow,1) = ALLTRIM(STR(lni))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,3) = ALLTRIM(ipk)
+			thisform.PF.Page5.F1_55.TextRC(lnRow,17) = RIGHT("0"+ALLTRIM(STR(DAY(daten))),2)+"."+;
+														RIGHT("0"+ALLTRIM(STR(MONTH(daten))),2)+"."+;
+														ALLTRIM(STR(YEAR(daten)))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,22) = ALLTRIM(nomer)
+			thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(sumall,18,2))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(sumallpdv,18,2))
+			thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+						
+			_ipk = ipk
+		
+			lnRow = lnRow + 1
+		
+	ENDSCAN 
+	thisform.PF.Page5.F1_55.row = _rrr
+	thisform.PF.Page5.F1_55.col = _ccc
+			closedbf1('aaa1')
+***** Q2_K
+			
+	m.lnsumall = 0.00
+	m.lnsumallpdv = 0.00
+	m.lnsumallo = 0.00
+	m.lnsumallpdvo = 0.00
+	SELECT('ttt11a')	
+	CALCULATE SUM(sumall),SUM(sumallpdv) TO m.lnsumall,m.lnsumallpdv &&FOR sumall>=0
+*	thisform.PF.Page5.F1_55.TextRC(lnRow+1,33) = ALLTRIM(STR(ROUND(m.lnsumall,0)))
+*	thisform.PF.Page5.F1_55.TextRC(lnRow+1,43) = ALLTRIM(STR(ROUND(m.lnsumallpdv,0)))	
+
+	thisform.PF.Page5.F1_55.TextRC(lnRow,34) = ALLTRIM(STR(ROUND(m.lnsumall,0)))
+	thisform.PF.Page5.F1_55.TextRC(lnRow,42) = ALLTRIM(STR(ROUND(m.lnsumallpdv,0)))	
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+1,43) = ALLTRIM(STR(ROUND(0,0)))	
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+2,33) = ALLTRIM(STR(ROUND(m.lnsumallo,0)))
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+2,38) = ALLTRIM(STR(ROUND(m.lnsumallpdvo,0)))	
+	*thisform.PF.Page5.F1_55.TextRC(lnRow+2,43) = ALLTRIM(STR(ROUND(0,0)))	
+ENDIF 
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T21",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	STORE 0 TO m.lnRR4, m.lnRR5
+	STORE 0 TO m.lnSunR4, m.lnSunR5,m.lnSunR7
+	lnRow = F1Find.Row 
+	*lnRow = F1Find.Row + 1
+	lnI = 0
+
+*!*		SELECT ipk, yy, mm, SUM(sum52+sum55) as sumall, SUM(sumpdv52) as sumallpdv,SUM(sumpdv55) as sumallpdv7;
+*!*		FROM zn_zvit_tmp4 WHERE (sum52+sum55!=0 AND sumpdv52+sumpdv55!=0);
+*!*		READWRITE;
+*!*		GROUP BY ipk, yy, mm ORDER BY ipk INTO CURSOR ttt1
+
+	SELECT ipk, yy, mm, PrOsnFond, SUM(sum52+sum55) as sumall, SUM(sumpdv52) as sumallpdv,SUM(sumpdv55) as sumallpdv7;
+		FROM zn_zvit_tmp4 WHERE (sum52+sum55!=0 AND sumpdv52+sumpdv55!=0);
+		READWRITE;
+		GROUP BY ipk, yy, mm, PrOsnFond ORDER BY ipk INTO CURSOR ttt1
+	
+	SELECT 1 as gr, SUM(sum52of) as sumall, SUM(sumpdv52of) as sumallpdv; 
+	FROM zn_zvit_tmp4 WHERE (sum52of!=0 AND sumpdv52of!=0);
+	INTO CURSOR ttt2;
+	READWRITE;
+	GROUP BY gr
+
+	m.lcSs = ""
+	SELECT zn_zvit_tmp4
+	GO TOP 
+	SCAN FOR sum52of!=0 AND sumpdv52of!=0
+		IF EMPTY(m.lcSs)
+			m.lcSs = ALLTRIM(namep)
+		ELSE
+			m.lcSs = m.lcSs + '; ' +ALLTRIM(namep)
+		ENDIF
+	ENDSCAN
+
+	SELECT('ttt1')
+	GO TOP 
+	SCAN 
+		SELECT('ttt1')		
+		lnI = lnI + 1
+		IF lnI>1
+			thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,43,3)
+		ENDIF 
+*		thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,48,3)
+		thisform.PF.Page5.F1_55.TextRC(lnRow,1) = ALLTRIM(STR(lni))
+		thisform.PF.Page5.F1_55.TextRC(lnRow,3) = ALLTRIM(ipk)
+		thisform.PF.Page5.F1_55.TextRC(lnRow,19) = PADL(ALLTRIM(STR(mm)),2,'0')+'/'+ALLTRIM(STR(yy))
+		thisform.PF.Page5.F1_55.TextRC(lnRow,22) = ALLTRIM(STR(yy))
+		*thisform.PF.Page5.F1_55.TextRC(lnRow,26) = ""
+
+		IF PrOsnFond
+			thisform.PF.Page5.F1_55.TextRC(lnRow,31) = "+"
+		ENDIF
+		
+		thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumall,18,2))
+		m.lnSunR4 = m.lnSunR4 + sumall
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,43) = ALLTRIM(STR(sumallpdv,18,2))
+		m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+		thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv7,18,2))
+		m.lnSunR7 = m.lnSunR7 + sumallpdv7
+		lnRow = lnRow + 1
+	ENDSCAN 
+	**** Вставка 7%
+*!*	SELECT('ttt1_7')
+*!*		GO TOP 
+*!*		SCAN 
+*!*			SELECT('ttt1_7')		
+*!*			lnI = lnI + 1
+*!*			IF lnI>1
+*!*				thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,43,3)
+*!*			ENDIF 
+*!*	*		thisform.PF.Page5.F1_55.insertRange(lnRow,1,lnRow,48,3)
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,1) = ALLTRIM(STR(lni))
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,3) = ALLTRIM(ipk)
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,19) = PADL(ALLTRIM(STR(mm)),2,'0')+'/'+ALLTRIM(STR(yy))
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,22) = ALLTRIM(STR(yy))
+*!*			*thisform.PF.Page5.F1_55.TextRC(lnRow,26) = ""
+
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,38) = ALLTRIM(STR(sumall,18,2))
+*!*			m.lnSunR4 = m.lnSunR4 + sumall
+
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,43) = "0.00"
+*!*			m.lnSunR5 = m.lnSunR5 + sumallpdv
+
+*!*			thisform.PF.Page5.F1_55.TextRC(lnRow,48) = ALLTRIM(STR(sumallpdv,18,2))
+*!*			lnRow = lnRow + 1
+*!*		ENDSCAN 
+	**IF m.lnI <> 0
+	*	thisform.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T21END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) = ALLTRIM(STR(m.lnSunR5,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,43) = ALLTRIM(STR(ttt2.sumallpdv,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,52) = ALLTRIM(m.lcSs)
+
+		FOR i = 2 TO 3
+			thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,31) = "0.00"
+			thisform.P
+
+--- loaddata capability flags ---
+T22=False
+col43=True
+col48=True
+sumallpdv=True
+lnSunR=True
+ReadEx=False
+XMLDATA=False
+
+===== Empty XML tag post-process =====
+
+===== STRTRAN on _xml =====
+pat=STRTRAN\s*\(\s*_xml
+hits=0
+
+===== xsi:nil usages related G7/G8 empty =====
+pat=G[78].{0,40}xsi:nil|xsi:nil.{0,40}G[78]
+hits=23
+--- #1 @ 65006 ---
+ue" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG42 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				ENDIF
+
+*!*				F1Find = thisform.PF.Page5.F1_55.DefineSearch("T101END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				F1Find.FindNext()
+*!*				_xml = _xml + '<R0110G6>' + Thisform.PF.Pag
+--- #2 @ 65077 ---
+rue" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				ENDIF
+
+*!*				F1Find = thisform.PF.Page5.F1_55.DefineSearch("T101END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				F1Find.FindNext()
+*!*				_xml = _xml + '<R0110G6>' + Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,34) + '</R0110G6>'+ CRLF
+*!*				_xml = _xml
+--- #3 @ 108184 ---
+/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+				EXIT
+				
+				ENDIF 
+					_xml = _xml + '<T'+key2+'RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.Text
+--- #4 @ 108260 ---
+/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+				EXIT
+				
+				ENDIF 
+					_xml = _xml + '<T'+key2+'RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T'+key2+'RXXXXG2>'+ 
+--- #5 @ 110414 ---
+" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+		ENDIF		
+		
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch(m.key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		F1Find.FindNext()
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,34)
+		IF 
+--- #6 @ 110486 ---
+" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+		ENDIF		
+		
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch(m.key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		F1Find.FindNext()
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,34)
+		IF EMPTY (_pids)
+			_pids='0'
+		ENDIF 
+		IF EMPTY (_pids)
+		
+						_xm
+--- #7 @ 111042 ---
+RLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G6>' + _pids + '</R0'+key2+'G6>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G7 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G7>' + _pids + '</R0'+key2+'G7>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G8 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G8>' + _pids + '</R0'
+--- #8 @ 111265 ---
+RLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G7>' + _pids + '</R0'+key2+'G7>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G8 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G8>' + _pids + '</R0'+key2+'G8>'+ CRLF
+		ENDIF 
+
+			
+	*	_xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42) + '</R0'+key2+'G7>'+ CRLF
+	*	_xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,
+--- #9 @ 113358 ---
+ = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod >0
+						_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						
+						
+						ENDIF 
+				EXIT
+				
+				ENDIF 
+				_xml = _xml + '<T'+key2+'RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3
+--- #10 @ 113433 ---
+ = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod >0
+						_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						
+						
+						ENDIF 
+				EXIT
+				
+				ENDIF 
+				_xml = _xml + '<T'+key2+'RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T'+key2+'RXXXXG2>'+ CRLF
+				IF prkasmetod>0 && Таблиця 2.1, де є к
+--- #11 @ 118383 ---
+ = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod >0
+						_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+		ENDIF		
+		
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		F1Find.FindNext()
+		bukva1='G'+STR(4+IIF(prkasmetod>0,2,0),1)
+
+--- #12 @ 118458 ---
+ = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod >0
+						_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+		ENDIF		
+		
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		F1Find.FindNext()
+		bukva1='G'+STR(4+IIF(prkasmetod>0,2,0),1)
+		bukva2='G'+STR(5+IIF(prkasmetod>0,2,0),1)
+		bukva3='G'+STR(6+IIF(prkasme
+--- #13 @ 222777 ---
+2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</TчыRXXXXG2>чэю~Tчьчы<TчыRXXXXG3D ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG3D>чэю~Tчьчы<TчыRXXXXG4S ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG4S>чэю!TчьCчшффф	ф
+--- #14 @ 222826 ---
+3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</TчыRXXXXG2>чэю~Tчьчы<TчыRXXXXG3D ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG3D>чэю~Tчьчы<TчыRXXXXG4S ROWNUM="Cчшффф	ф
+цы">Cчшффф	ф
+цы</Tчы	RXXXXG4S>чэю!TчьCчшффф	ф
+цэю%ьCчЎэщю]Tчьчы<TчыRXXXXG5 xsi:nil="true" ROWN
+--- #15 @ 223465 ---
+>чэюю|Tчьчы<TчыRXXXXG6 ROWNUM="Cчшффф	ф
+цы">Cчш"ффф	ф
+цы</TчыRXXXXG6>чэю|Tчьчы<TчыRXXXXG7 ROWNUM="Cчшффф	ф
+цы">Cчш*ффф	ф
+цы</TчыRXXXXG7>чэю|Tчьчы<TчыRXXXXG8 ROWNUM="Cчшффф	ф
+цы">Cчш0ффф	ф
+цы</TчыRXXXXG8>чэююющЊ	юBTчьчы<Tчы#RXXXXG2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="tr
+--- #16 @ 223694 ---
+2 xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю>TчьCхчшшш1ффф	ф
+чш4шффф	ф
+цэюьCфцэю#TчьCфчш"ффф	ф
+цэю%ьCчЎэщ
+юTчьы0эюю%ьCчЎэщa
+ю3Tчьчы<R0чыG6 xsi:nil="true"/>чэющЈ
+ю:Tчьчы<R0чыG6>чы</R0чыG6>чэюю#TчьCфчш*ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG7 xsi:nil="true"/>чэющNю:Tчьчы<
+--- #17 @ 223743 ---
+3D xsi:nil="true" ROWNUM="1"/>чэюCTчьчы<Tчы$RXXXXG4S xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэюю>TчьCхчшшш1ффф	ф
+чш4шффф	ф
+цэюьCфцэю#TчьCфчш"ффф	ф
+цэю%ьCчЎэщ
+юTчьы0эюю%ьCчЎэщa
+ю3Tчьчы<R0чыG6 xsi:nil="true"/>чэющЈ
+ю:Tчьчы<R0чыG6>чы</R0чыG6>чэюю#TчьCфчш*ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG7 xsi:nil="true"/>чэющNю:Tчьчы<R0чыG7>чы</R0чыG7>чэюю#TчьCфчш0ффф	ф
+цэю%ьCчЎэщю3
+--- #18 @ 224010 ---
+NUM="1"/>чэюю>TчьCхчшшш1ффф	ф
+чш4шффф	ф
+цэюьCфцэю#TчьCфчш"ффф	ф
+цэю%ьCчЎэщ
+юTчьы0эюю%ьCчЎэщa
+ю3Tчьчы<R0чыG6 xsi:nil="true"/>чэющЈ
+ю:Tчьчы<R0чыG6>чы</R0чыG6>чэюю#TчьCфчш*ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG7 xsi:nil="true"/>чэющNю:Tчьчы<R0чыG7>чы</R0чыG7>чэюю#TчьCфчш0ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG8 xsi:nil="true"/>чэющщю:Tчьчы<R0чыG8>чы</R0чыG8>чэююю	BьчэюUKEY1KEY2KEY1END_XMLCRLF_PIDSF1FINDTHISFORMPFPAGE5F1_55DEFINESEARCHMAXROWFINDNEXT	ROWHIDDENROWTEXTRCT1STARTIXMLCЇччючччюччччч	юTчьCш Cш
+ эюTхчьчыENDэюTчьыэ
+--- #19 @ 224101 ---
+Ўэщa
+ю3Tчьчы<R0чыG6 xsi:nil="true"/>чэющЈ
+ю:Tчьчы<R0чыG6>чы</R0чыG6>чэюю#TчьCфчш*ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG7 xsi:nil="true"/>чэющNю:Tчьчы<R0чыG7>чы</R0чыG7>чэюю#TчьCфчш0ффф	ф
+цэю%ьCчЎэщю3Tчьчы<R0чыG8 xsi:nil="true"/>чэющщю:Tчьчы<R0чыG8>чы</R0чыG8>чэююю	BьчэюUKEY1KEY2KEY1END_XMLCRLF_PIDSF1FINDTHISFORMPFPAGE5F1_55DEFINESEARCHMAXROWFINDNEXT	ROWHIDDENROWTEXTRCT1STARTIXMLCЇччючччюччччч	юTчьCш Cш
+ эюTхчьчыENDэюTчьыэю%ьчыT21эщѕюTчьшэюTчьш&эюTчьш+эюTчьш0эюTч	ьшэющюTчьшэюTчьшэюTчьш&эюTчьш.эюTч	ьшэю
+--- #20 @ 225073 ---
+:nil="true" ROWNUM="1"/>чэююBTчьчы<Tчы#RXXXXG4 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG5 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG6 xsi:nil="true" ROWNUM="1"/>чэю%ьч	шэщѓюBTчьчы<Tчы#RXXXXG7 xsi:nil="true" ROWNUM="1"/>чэюBTчьчы<Tчы#RXXXXG8 xsi:nil="true" ROWNUM="1"/>чэююю!юю|Tчьчы<TчыRXXXXG2 ROWNUM="Cчшффффцы">Cчшффффцы</TчыRXXXXG2>чэю%ьч	шэщ
+юTчьчы<TчыRXXXXG31 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы	RXXXXG31>чэюTчьчы<TчыRXXXXG32 ROWNUM="Cчшффффцы">CCчшффффцшш\ы</Tчы	RXXXXG32>чэю]Tчьчы<Tчы
+
+===== empty pair tags pattern =====
+pat=></R0|></T\d|STRIP|видален|удалить пуст
+hits=0
+
+===== Kushnir G7/G8 block =====
+pat=prkasmetod\s*=\s*0[\s\S]{0,200}R0'\+key2\+'G7
+hits=1
+--- #1 @ 119276 ---
+TextRC(F1Find.Row,x3) + '</R0'+key2+bukva3+'>'+ CRLF
+		
+		*Додано ШІ(А Кушнір) 12/06/2026
+				IF prkasmetod=0
+				    _xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) + '</R0'+key2+'G7>'+ CRLF
+				    _xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+				ENDIF
+				
+				*Змінено(закоментовано) ШІ(А Кушнір) 12/06/2026
+				FOR I=1 TO 3
+					_xml = _xml + '<R0'+key2+STR(I,1)+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x1) + '</R0'+key2+STR(I,1)+bukva1+'>'+ CRLF
+					_xml = _xml + '<R0'+key2+STR(I,1)+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x2) + '</R0'+key2+STR(I,1)+bukva2+'>'+ CRLF
+					*
+
+xmlpart @ 107072 xmlpart2 @ 111645
+
+===== PROCEDURE xmlpart (until xmlpart2) len=4573 =====
+PROCEDURE xmlpart
+LPARAMETERS key1,key2
+LOCAL key1end,_xml,CRLF,_pids
+CRLF = Chr(13)+Chr(10) 
+m.key1end=key1+'END'
+_xml=''
+F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+			T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+			F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+			IF (F1Find.FindNext())
+				FOR i = T1Start TO (F1Find.Row - 1)
+				IF LEN(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(i,3)))=0
+						IF i=T1Start
+							_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG4S xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+				EXIT
+				
+				ENDIF 
+					_xml = _xml + '<T'+key2+'RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T'+key2+'RXXXXG2>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG3D ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,17) +'</T'+key2+'RXXXXG3D>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG4S ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,22) +'</T'+key2+'RXXXXG4S>'+ CRLF
+					_pids=thisform.PF.Page5.F1_55.TextRC(i,28)
+					 IF EMPTY(_pids)
+					 xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+CRLF
+					 else
+					_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + IIF(EMPTY(_pids) or ALLTRIM(_pids)='-','0','1') + '</T'+key2+'RXXXXG5>'+ CRLF
+					ENDIF 
+					*_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,28) + '</T'+key2+'RXXXXG5>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,34) + '</T'+key2+'RXXXXG6>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,42) + '</T'+key2+'RXXXXG7>'+ CRLF
+					_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG9 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+				ENDFOR 
+			ENDIF 
+		ELSE	
+			_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG4S xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+			_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+		ENDIF		
+		
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch(m.key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		F1Find.FindNext()
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,34)
+		IF EMPTY (_pids)
+			_pids='0'
+		ENDIF 
+		IF EMPTY (_pids)
+		
+						_xml = _xml + '<R0'+key2+'G6 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G6>' + _pids + '</R0'+key2+'G6>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G7 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G7>' + _pids + '</R0'+key2+'G7>'+ CRLF
+		ENDIF 
+		_pids=thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48)
+		IF EMPTY (_pids)
+						_xml = _xml + '<R0'+key2+'G8 xsi:nil="true"/>'+ CRLF
+		ELSE 
+			_xml = _xml + '<R0'+key2+'G8>' + _pids + '</R0'+key2+'G8>'+ CRLF
+		ENDIF 
+
+			
+	*	_xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,42) + '</R0'+key2+'G7>'+ CRLF
+	*	_xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+		
+*
+ENDIF
+RETURN _xml 
+
+ENDPROC
+
+
+===== Command5.Click regex success=True =====
+Name = "Command5"
+ZVIT_BUH29_1_EDIT202102Command5commandbuttoncommandbuttonNPROCEDURE Click
+LOCAL cFilePath, nType, oFile, cNameFile
+
+LOCAL oErr &&AS Exception
+
+
+cFilePath = ""
+nType = 11
+cNameFile = ""
+	LOCAL F1, namef
+	DO CASE
+	CASE thisform.pf.ActivePage = 1
+		F1 = thisform.PF.Page1.F1_1
+	CASE thisform.pf.ActivePage = 2
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page2.Caption 
+	CASE thisform.pf.ActivePage = 3
+		F1 = thisform.PF.Page3.F1_3
+		cNameFile = thisform.PF.Page3.Caption 
+	CASE thisform.pf.ActivePage = 4
+		F1 = thisform.PF.Page4.F1_4
+		cNameFile = thisform.PF.Page4.Caption 
+	CASE thisform.pf.ActivePage = 5
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page5.Caption 
+				
+	OTHERWISE
+
+	ENDCASE
+
+cFilePath = PUTFILE("Збереження звіту...",IIF(EMPTY(cNameFile),"Zvit",cNameFile),"XLS")
+
+IF cFilePath == ""
+		*не вибрано
+ELSE
+	*вибрано
+	TRY 
+		F1.write(cFilePath,nType)
+	CATCH TO oErr
+		MESSAGEBOX("Файл уже використовується!"+CHR(13)+"Завершіть роботу з ним і повторіть експорт"+CHR(13)+"або змініть ім'я.",0+64,"Увага!")		
+	FINALLY  
+		
+	ENDTRY 
+	
+*!*		IF TYPE("oErr")="O"
+*!*		
+*!*		ELSE 
+*!*		
+*!*			*IF thisform.check1.Value = 1
+*!*					****Запускаємо ексель чи опен офіс
+*!*					thisform.LockScreen = .T. 
+*!*					thisform.export(cFilePath)
+*!*					thisform.LockScreen = .F. 				
+*!*			*ENDIF 
+*!*				
+*!*		ENDIF 	
+ENDIF 
+
+ENDPROC
+
+===== Click @ 136580 =====
+PROCEDURE Click
+LOCAL cFilePath, nType, oFile, cNameFile
+
+LOCAL oErr &&AS Exception
+
+
+cFilePath = ""
+nType = 11
+cNameFile = ""
+	LOCAL F1, namef
+	DO CASE
+	CASE thisform.pf.ActivePage = 1
+		F1 = thisform.PF.Page1.F1_1
+	CASE thisform.pf.ActivePage = 2
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page2.Caption 
+	CASE thisform.pf.ActivePage = 3
+		F1 = thisform.PF.Page3.F1_3
+		cNameFile = thisform.PF.Page3.Caption 
+	CASE thisform.pf.ActivePage = 4
+		F1 = thisform.PF.Page4.F1_4
+		cNameFile = thisform.PF.Page4.Caption 
+	CASE thisform.pf.ActivePage = 5
+		F1 = thisform.PF.Page5.F1_55
+		cNameFile = thisform.PF.Page5.Caption 
+				
+	OTHERWISE
+
+	ENDCASE
+
+cFilePath = PUTFILE("Збереження звіту...",IIF(EMPTY(cNameFile),"Zvit",cNameFile),"XLS")
+
+IF cFilePath == ""
+		*не вибрано
+ELSE
+	*вибрано
+	TRY 
+		F1.write(cFilePath,nType)
+	CATCH TO oErr
+		MESSAGEBOX("Файл уже використовується!"+CHR(13)+"Завершіть роботу з ним і повторіть експорт"+CHR(13)+"або змініть ім'я.",0+64,"Увага!")		
+	FINALLY  
+		
+	ENDTRY 
+	
+*!*		IF TYPE("oErr")="O"
+*!*		
+*!*		ELSE 
+*!*		
+*!*			*IF thisform.check1.Value = 1
+*!*					****Запускаємо ексель чи опен офіс
+*!*					thisform.LockScreen = .T. 
+*!*					thisform.export(cFilePath)
+*!*					thisform.LockScreen = .F. 				
+*!*			*ENDIF 
+*!*				
+*!*		ENDIF 	
+ENDIF 
+
+ENDPROC
+
+===== Methods calling Xmlpart2 =====
+caller ctx: _xml=_xml+thisform.Xmlpart2(
+caller ctx: _xml=_xml+thisform.Xmlpart2(
+Xmlpart2 call pos=62889
+
+===== Active T22END DefineSearch blocks with following assignments =====
+--- @ 32960 prev='
+	' ---
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR5,18,2))
+		*thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,46) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,31) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumallpdv,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,46) = ALLTRIM(STR(ttt2.sumallpdv7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,31) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,38) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+2,46) = "0.00"
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+3,31) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+3,38) = "0.00"
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+3,46) = "0.00"
+	ENDIF
+
+	closedbf1('ttt1')
+	closedbf1('ttt2')
+ENDIF
+
+******************************555555555555555555555555555555555555
+
+
+******************************555555555555555555555555555555555555
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HFILL",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+&& дата подання
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,14) = SUBSTR(PADL(ALLTRIM(STR(DAY(thisform.datazvit),2,0)),2,'0'),1,1)+;
+			SUBSTR(PADL(ALLTRIM(STR(DAY(thisform.datazvit),2,0)),2,'0'),2,1) +;
+			SUBSTR(PADL(ALLTRIM(STR(MONTH(thisform.datazvit),2,0)),2,'0'),1,1)+;
+			SUBSTR(PADL(ALLTRIM(STR(MONTH(thisform.datazvit),2,0)),2,'0'),2,1)+;
+			SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),1,1)+;
+			SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),2,1)+;
+			SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),3,1)+;
+			SUBSTR(ALLTRIM(STR(YEAR(thisform.datazvit),4,0)),4,1)
+ENDIF
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,14) = thisform.pcdirector &&керівник
+ENDIF
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HKBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,14) = thisform.pcdirectortin &&керівник
+ENDIF
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("HBUH",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+IF (F1Find.FindNext())
+	thisform.PF.Page5.F1_55.TextRC(F1Fi
+--- @ 65960 prev='			' ---
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				IF (F1Find.FindNext())
+*!*					FOR i = T1Start TO (F1Find.Row - 1)
+*!*						_xml = _xml + '<T2RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T2RXXXXG2>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3A ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,23) + '</T2RXXXXG3A>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3B ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,26) + '</T2RXXXXG3B>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG4 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,31) + '</T2RXXXXG4>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,39) + '</T2RXXXXG5>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,46) + '</T2RXXXXG6>'+ CRLF
+*!*					ENDFOR 
+*!*				ENDIF 
+*!*			ELSE	
+*!*				_xml = _xml + '<T2RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG3A xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG3B xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*			ENDIF
+*!*			
+*!*			F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*			F1Find.FindNext()			
+*!*			FOR i = 0 TO 3
+*!*				_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G4>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,31) + '</R02'+ALLTRIM(STR(i))+'G4>'+ CRLF
+*!*				_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G5>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,39) + '</R02'+ALLTRIM(STR(i))+'G5>'+ CRLF
+*!*				IF i <> 1
+*!*				 	_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G6>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,46) + '</R02'+ALLTRIM(STR(i))+'G6>'+ CRLF
+*!*				ENDIF
+*!*			ENDFOR
+*!*		ENDIF 
+
+	_xml = _xml + '<HFILL>'+H_FILL+'</HFILL>' + CRLF	
+				  
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + IIF(EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14))),'<HBOS xsi:nil="true"/>','<HBOS>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14)
+--- @ 132095 prev='
+		' ---
+F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		IF (F1Find.FindNext())
+			m.lnRow = T1Start
+			FOR i = T1Start TO (F1Find.Row - 1)
+				IF LEN(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,3)))=0
+					m.lnNom = m.lnNom + 1
+					thisform.PF.Page5.F1_55.TextRC(m.lnRow,1) = ALLTRIM(STR(m.lnNom))
+					m.lnRow = lnRow + 1
+					
+					SKIP
+				ENDIF 
+					
+					IF VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,38))<>0 OR;
+						VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,43))<>0 OR;
+						VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,48))<>0
+						
+						m.lnNom = m.lnNom + 1
+						m.lcMark = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,50))
+						m.lc3 = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,3))
+						m.lc19 = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnRow,19))
+						m.ln31 = VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,31))
+						m.ln38 = VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,38))
+						m.ln46 = VAL(thisform.PF.Page5.F1_55.TextRC(m.lnRow,46))
+						
+						thisform.PF.Page5.F1_55.insertRange(m.lnRow,1,m.lnRow,43,3)
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,50) = m.lcMark
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,1) = ALLTRIM(STR(m.lnNom))
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,3) = m.lc3
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,19) = LEFT(m.lc19,2)+"/2020"
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,31) = ALLTRIM(STR(m.ln31*(-1),18,2))
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,38) = ALLTRIM(STR(m.ln38*(-1),18,2))
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,46) = ALLTRIM(STR(m.ln46*(-1),18,2))
+						m.lnRow = m.lnRow + 1
+						m.lnNom = m.lnNom + 1
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,1) = ALLTRIM(STR(m.lnNom))
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,50) = ""
+					ELSE
+						m.lnNom = m.lnNom + 1
+						thisform.PF.Page5.F1_55.TextRC(m.lnRow,1) = ALLTRIM(STR(m.lnNom))
+					ENDIF
+				m.lnRow = m.lnRow + 1
+			ENDFOR
+		ENDIF
+	ENDIF
+ENDIF
+
+do dgr_end
+
+ENDPROC
+ЯTop = 1
+Left = 464
+Height = 25
+Width = 25
+FontItalic = .F.
+FontName = "Arial"
+FontSize = 7
+Anchor = 9
+Picture = ..\..\
+Caption = "..."
+Enabled = .F.
+TabIndex = 2
+TabStop = .F.
+Visible = .F.
+Name = "Command7"
+ZVIT_BUH29_1_EDIT202102Command7commandbuttoncommandbuttonPROCEDURE Click
+LOCAL lctext
+m.lctext='20110414'+CHR(13)+;
+	'якщо податкові накладні мають дві галочки то в цю декларацію вони не попадають'+CHR(13)+;
+	'в Корирування попадають податкові коригування і звичайні податкові які мають першу галочку'+
+
+===== edit202304 xmlpart2 exists=True =====
+202304 xmlpart2 has RXXXXG8 active (non-star): True
+202304 Kushnir prkasmetod=0 G7: True
+202304 G8 count=8
+'
+		x1=31
+		x2=38
+		x3=43
+		x4=48
+		prkasmetod=26
+ELSE
+		x1=26
+		x2=31
+		x3=38
+		x4=46
+		prkasmetod=0
+ENDIF 
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+			T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+			F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+			IF (F1Find.FindNext())
+				FOR i = T1Start TO (F1Find.Row - 1)
+				IF LEN(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(i,3)))=0
+						IF i=T1Start
+						_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod >0
+						_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						
+						
+						ENDIF 
+				EXIT
+				
+				ENDIF 
+				_xml = _xml + '<T'+key2+'RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T'+key2+'RXXXXG2>'+ CRLF
+				IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),1,2)+'</T'+key2+'RXXXXG31>'+  CRLF
+						*	_xml = _xml + '<T'+key2+'RXXXXG32 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + '20'+SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,2)+'</T'+key2+'RXXXXG32>'+  CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,4)+'</T'+key2+'RXXXXG32>'+  CRLF
+							_xml = _xml 
+
+===== STRTRAN(_xml count =====
+0
+
+===== Compiled/binary string template note =====
+Raw ASCII RXXXXG8 count=21
+Source PROCEDURE xmlpart2 is in memo; SCX companion has 0 xmlpart2 (methods only in SCT).
+zvit_buh29_1_edit202102.SCT
+zvit_buh29_1_edit202102.scx
+
+===== XML builder method: PROCEDURE page2toxml @ 56739 =====
+PROCEDURE page2toxml
+*http://minrd.gov.ua/elektronna-zvitnist/platnikam-podatkiv-pro/informatsiyno-analitichne-za/reestr-elektronnih-form-po/
+
+LOCAL _xml, _filename, CRLF, TIN,lnrec_year
+_xml = ''
+_filename = ''
+CRLF = Chr(13)+Chr(10) 
+*J0200515.xsd 
+*J0200516.xsd 
+*J0200519.xsd
+*J0200520.xsd дані беремо з файла
+
+*common_types.xsd тут опис форматів типів що є що
+
+****формуємо ХМЛ-файл
+	TIN = "00000000"
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HTIN",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		TIN = ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row ,31))		
+	ENDIF  
+
+	m.lnrec_year=8
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HZY",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		m.lnrec_year=F1Find.Row
+	ENDIF
+		  
+	_xml = _xml + '<?xml version="1.0" encoding="windows-1251"?>' + CRLF
+	_xml = _xml + '<DECLAR xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="J0200524.xsd">' + CRLF
+	_xml = _xml + '<DECLARHEAD>' + CRLF
+	_xml = _xml + '<TIN>'+TIN+'</TIN>' + CRLF	
+	_xml = _xml + '<C_DOC>J02</C_DOC>' + CRLF
+	_xml = _xml + '<C_DOC_SUB>005</C_DOC_SUB>' + CRLF
+	_xml = _xml + '<C_DOC_VER>24</C_DOC_VER>' + CRLF
+	_xml = _xml + '<C_DOC_TYPE>0</C_DOC_TYPE>' + CRLF
+	_xml = _xml + '<C_DOC_CNT>1</C_DOC_CNT>' + CRLF
+	_xml = _xml + '<C_REG>19</C_REG>' + CRLF
+	_xml = _xml + '<C_RAJ>18</C_RAJ>' + CRLF
+	_xml = _xml + '<PERIOD_MONTH>'+;
+						IIF(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,43))=='0','',ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,43)))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,45))+;
+				  '</PERIOD_MONTH>' + CRLF &&місяць	
+				  
+	_xml = _xml + '<PERIOD_TYPE>1</PERIOD_TYPE>' + CRLF &&період 1 - місяць			
+	_xml = _xml + '<PERIOD_YEAR>'+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,27))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,29))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,31))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,33))+;												
+				  '</PERIOD_YEAR>' + CRLF
+	_xml = _xml + '<C_STI_ORIG>1918</C_STI_ORIG>'+ CRLF				  
+	_xml = _xml + '<C_DOC_STAN>1</C_DOC_STAN>'+ CRLF				  
+	
+	H_FILL="00000000"
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HFILL",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		H_FILL=ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row ,14))
+	ENDIF 
+		
+	_xml = _xml + '<D_FILL>'+H_FILL+'</D_FILL>' + CRLF
+	_xml = _xml + '<SOFTWARE></SOFTWARE>' + CRLF
+	_xml = _xml + '</DECLARHEAD>' + CRLF
+	_xml = _xml + '<DECLARBODY>' + CRLF
+	
+****************************************************************
+*тип який це є додаток, звітний, звітний новий, уточнюючий
+			IF !EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(4,40)))
+				_xml = _xml + '<HZ>1</HZ>'+ CRLF
+			ELSE
+				IF !EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(5,40)))
+					_xml = _xml + '<HZN>1</HZN>'+ CRLF
+				ELSE
+					IF !EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(6,40)))
+						_xml = _xml + '<HZU>1</HZU>'+ CRLF
+					ELSE
+						*помилка немає відмітки про тип
+						_xml = _xml + '<HZ>1</HZ>'+ CRLF
+					ENDIF
+				ENDIF
+			ENDIF
+****************************************************************
+
+	_xml = _xml + '<HZY>' + ;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,27))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,29))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,31))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,33))+;
+				  '</HZY>'+ CRLF						
+				  
+
+			IF EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,37)))
+				***місячний
+				_xml = _xml + '<HZM>' + ;				
+						IIF(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,45))='0','',ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,43)))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,45))+;
+						 '</HZM>'+ CRLF
+			ELSE
+				****квартальний
+				_xml = _xml + '<HZKV>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year,37)) +'</HZKV>'+ CRLF			
+			ENDIF 
+	
+****************************************************************
+IF NOT EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,27)))
+	_xml = _xml + '<HZYP>' + ;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,27))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,29))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,31))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,33))+;
+				  '</HZYP>'+ CRLF						
+				  
+
+			IF EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,37)))
+				***місячний
+				_xml = _xml + '<HZMP>' + ;				
+						IIF(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,43))='0','',ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,43)))+;
+						ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,45))+;
+						 '</HZMP>'+ CRLF
+			ELSE
+				****квартальний
+				_xml = _xml + '<HZKVP>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(m.lnrec_year+2,37)) +'</HZKVP>'+ CRLF			
+			ENDIF 
+ENDIF 			
+****************************************************************
+
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HNAME",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + '<HNAME>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,9)) +'</HNAME>'+ CRLF
+	ENDIF
+		
+	_xml = _xml + '<HTIN>'+ TIN +'</HTIN>'+ CRLF
+
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HNPDV",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + '<HNPDV>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row ,31)) +'</HNPDV>'+ CRLF
+	ENDIF	
+**********
+****ТАБЛИЦЯ 1
+**  Перша частина
+_xml=_xml+thisform.Xmlpart('LL10','111') 
+*** Друга частина 
+_xml=_xml+thisform.Xmlpart('LL11','112') 
+
+*** Таблиця 1.2 1 xfcnbyf
+_xml=_xml+thisform.Xmlpart('LL121','121')
+_xml=_xml+thisform.Xmlpart('LL122','122')
+_xml=_xml+thisform.Xmlpart('LL123','123')
+_xml=_xml+thisform.Xmlpart('LL124','124')
+
+_xml=_xml+thisform.Xmlpart2('T21','21')
+_xml=_xml+thisform.Xmlpart2('T22','22')
+
+
+
+*!*	STRTOFILE(_xml,'d:\aaaa.xml')
+*!*	RETURN 
+*!*	****ТАБЛИЦЯ 1.1
+*!*		F1Find = thisform.PF.Page5.F1_55.DefineSearch("T101",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*		IF (F1Find.FindNext())
+*!*			T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+*!*			F1Find = thisform.PF.Page5.F1_55.DefineSearch("T101END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*			IF (F1Find.FindNext())
+*!*				LOCAL lnNomStr
+*!*				m.lnNomStr = 0
+*!*				FOR i = T1Start TO (F1Find.Row - 1)
+*!*					IF !ALLTRIM(Thisform.PF.Page5.F1_55.TextRC(i,3)) == ""
+*!*						m.lnNomStr = m.lnNomStr + 1
+*!*						_xml = _xml + '<T11RXXXXG2 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,3) + '</T11RXXXXG2>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG3D ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,19) + '</T11RXXXXG3D>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG41 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,24) + '</T11RXXXXG41>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG42 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,29) + '</T11RXXXXG42>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG6 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,34) + '</T11RXXXXG6>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG7 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,41) + '</T11RXXXXG7>'+ CRLF
+*!*						_xml = _xml + '<T11RXXXXG8 ROWNUM="'+ALLTRIM(STR(m.lnNomStr))+'">' + Thisform.PF.Page5.F1_55.TextRC(i,48) + '</T11RXXXXG8>'+ CRLF
+*!*					ENDIF
+*!*				ENDFOR
+*!*				IF m.lnNomStr = 0
+*!*					_xml = _xml + '<T11RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG3D xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG41 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG42 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*					_xml = _xml + '<T11RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				ENDIF
+
+*!*				F1Find = thisform.PF.Page5.F1_55.DefineSearch("T101END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				F1Find.FindNext()
+*!*				_xml = _xml + '<R0110G6>' + Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,34) + '</R0110G6>'+ CRLF
+*!*				_xml = _xml + '<R0110G7>' + Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,41) + '</R0110G7>'+ CRLF
+*!*				_xml = _xml + '<R0110G8>' + Thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0110G8>'+ CRLF
+*!*			ENDIF
+*!*		ENDIF
+
+*!*	****ТАБЛИЦЯ 2
+*!*		F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*		IF (F1Find.FindNext())
+*!*			IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+*!*				T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+*!*				F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*				IF (F1Find.FindNext())
+*!*					FOR i = T1Start TO (F1Find.Row - 1)
+*!*						_xml = _xml + '<T2RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T2RXXXXG2>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3A ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,23) + '</T2RXXXXG3A>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG3B ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,26) + '</T2RXXXXG3B>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG4 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,31) + '</T2RXXXXG4>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,39) + '</T2RXXXXG5>'+ CRLF
+*!*						_xml = _xml + '<T2RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,46) + '</T2RXXXXG6>'+ CRLF
+*!*					ENDFOR 
+*!*				ENDIF 
+*!*			ELSE	
+*!*				_xml = _xml + '<T2RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG3A xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG3B xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*				_xml = _xml + '<T2RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+*!*			ENDIF
+*!*			
+*!*			F1Find = thisform.PF.Page5.F1_55.DefineSearch("T22END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+*!*			F1Find.FindNext()			
+*!*			FOR i = 0 TO 3
+*!*				_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G4>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,31) + '</R02'+ALLTRIM(STR(i))+'G4>'+ CRLF
+*!*				_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G5>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,39) + '</R02'+ALLTRIM(STR(i))+'G5>'+ CRLF
+*!*				IF i <> 1
+*!*				 	_xml = _xml + '<R02'+ALLTRIM(STR(i))+'G6>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+i,46) + '</R02'+ALLTRIM(STR(i))+'G6>'+ CRLF
+*!*				ENDIF
+*!*			ENDFOR
+*!*		ENDIF 
+
+	_xml = _xml + '<HFILL>'+H_FILL+'</HFILL>' + CRLF	
+				  
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + IIF(EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14))),'<HBOS xsi:nil="true"/>','<HBOS>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14)) +'</HBOS>')+ CRLF	
+	ENDIF 
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HKBOS",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + IIF(EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14))),'<HKBOS xsi:nil="true"/>','<HKBOS>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14)) +'</HKBOS>')+ CRLF	
+	ENDIF 
+	
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HBUH",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + IIF(EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14))),'<HBUH xsi:nil="true"/>','<HBUH>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14)) +'</HBUH >')+ CRLF	
+	ENDIF 
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("HKBUH",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		_row = F1Find.Row
+		_xml = _xml + IIF(EMPTY(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14))),'<HKBUH xsi:nil="true"/>','<HKBUH>'+ ALLTRIM(thisform.PF.Page5.F1_55.TextRC(_row,14)) +'</HKBUH >')+ CRLF	
+	ENDIF 
+		
+	_xml = _xml + '</DECLARBODY>' + CRLF
+	_xml = _xml + '</DECLAR>' + CRLF
+
+**********кынець XML-файлу
+
+*J0215102100000000110220112654
+*http://www.sta.gov.ua/control/uk/publish/article?art_id=249297&cat_id=249292
+
+
+	_filename = '1918' &&код податковоъ куда подаэться
+	_filename = _filename + PADL(TIN,10,'0') &&ЄДРПОУ
+	_filename = _filename + 'J02' &&C_DOC
+	_filename = _filename + '005' &&C_DOC_SUB
+	_filename = _filename + PADL('20',2,'0') &&C_DOC_VER
+
+	_filename = _filename + '1' &&C_DOC_STAN
+	*!*		&& Приймає фіксовані значення:
+*!*			*1-звітний документ
+*!*			*2-новий звітний документ
+*!*			*3-уточнюючий документ
+	_filename = _filename + '00' &&C_DOC_TYPE Номер нового звітного уточнюючого документу 
+	_filename = _filename + '0000001' &&C_DOC_CNT номер однотипного документа в періоді
+
+	_filename = _filename + '1' &&PERIOD_TYPE Тип звітного періоду 1-місяць, 2-квартал, 3-півріччя, 4-девять місяців, 5-рік		
+	_filename = _filename + ALLTRIM(thisform.PF.Page1.F1_1.TextRC(9,43))+;
+						    ALLTRIM(thisform.PF.Page1.F1_1.TextRC(9,45)) &&мысяць
+	_filename = _filename + ALLTRIM(thisform.PF.Page1.F1_1.TextRC(9,27))+;
+						    ALLTRIM(thisform.PF.Page1.F1_1.TextRC(9,29))+;
+						    ALLTRIM(thisform.PF.Page1.F1_1.TextRC(9,31))+;
+						    ALLTRIM(thisform.PF.Page1.F1_1.TextRC(9,33))	 &&рік
+	_filename = _filename + '1918' &&код податковоъ куда подаэться						    
+	_filename = _filename + '.xml'
+	
+
+IF NOT EMPTY(_xml) AND NOT EMPTY(_filename)
+	****треба перевірити на валідність по схемі
+	
+	****зберігаємо
+	STRTOFILE(_xml,'D:\'+_filename)	
+	STRTOFILE(_xml,'c:\opz\xml\'+_filename)	
+
+	MESSAGEBOX('Згенеровано файл: '+'c:\opz\xml\'+_filename,64,'Увага!')
+ENDIF 
+
+
+ENDPROC
+
+===== Callers of page2toxml count=1 =====
+--- call @ 136088 ---
+HERWISE
+
+ENDCASE
+
+
+ENDPROC
+Top = 1
+Left = 516
+Height = 25
+Width = 25
+FontItalic = .T.
+FontName = "Times New Roman"
+Anchor = 9
+Picture = ..\..\picture\bmps\preview.bmp
+Caption = ""
+StatusBarText = "Попередній перегляд"
+TabIndex = 2
+TabStop = .F.
+ToolTipText = "Попередній перегляд"
+Name = "Command6"
+ZVIT_BUH29_1_EDIT202102Command6commandbuttoncommandbutton(PROCEDURE Click
+DO CASE
+	CASE thisform.pf.ActivePage = 1
+		thisform.page1toxml()
+	CASE thisform.pf.ActivePage = 2
+		thisform.page2toxml()
+	CASE thisform.pf.ActivePage = 3
+		thisform.page3toxml()
+	CASE thisform.pf.ActivePage = 4
+		thisform.page4toxml()
+	OTHERWISE
+ENDCASE
+
+
+ENDPROC
+Top = 1
+Left = 568
+Height = 25
+Width = 25
+FontItalic = .F.
+FontName = "Arial"
+FontSize = 7
+Anchor = 9
+Picture = ..\..
+
+===== Click bodies mentioning xml/opz/1918 =====
+--- Click #4 @ 135967 ---
+BEFORE:
+
+	CATCH
+	ENDTRY
+OTHERWISE
+
+ENDCASE
+
+
+ENDPROC
+Top = 1
+Left = 516
+Height = 25
+Width = 25
+FontItalic = .T.
+FontName = "Times New Roman"
+Anchor = 9
+Picture = ..\..\picture\bmps\preview.bmp
+Caption = ""
+StatusBarText = "Попередній перегляд"
+TabIndex = 2
+TabStop = .F.
+ToolTipText = "Попередній перегляд"
+Name = "Command6"
+ZVIT_BUH29_1_EDIT202102Command6commandbuttoncommandbutton(
+PROCEDURE Click
+DO CASE
+	CASE thisform.pf.ActivePage = 1
+		thisform.page1toxml()
+	CASE thisform.pf.ActivePage = 2
+		thisform.page2toxml()
+	CASE thisform.pf.ActivePage = 3
+		thisform.page3toxml()
+	CASE thisform.pf.ActivePage = 4
+		thisform.page4toxml()
+	OTHERWISE
+ENDCASE
+
+
+ENDPROC
+--- Click #9 @ 140822 ---
+BEFORE:
+
+Name = "txtDaten"
+ZVIT_BUH29_1_EDIT202102txtDatentextboxtextbox.PROCEDURE Click
+thisform.Release()
+ENDPROC
+гTop = 2
+Left = 701
+Height = 25
+Width = 72
+FontItalic = .T.
+FontName = "Times New Roman"
+Anchor = 9
+Caption = "Відміна"
+StatusBarText = "Відміна"
+TabIndex = 4
+TabStop = .F.
+ToolTipText = "Відміна"
+Name = "cmdClose"
+ZVIT_BUH29_1_EDIT202102cmdClosecommandbuttoncommandbutton	
+PROCEDURE Click
+PUBLIC _xmldata1,_xmldata2,_xmldata3,_xmldata4,_xmldata5,_xmlver1,_xmlver2,_xmlver3,_xmlver4,_xmlver5
+do dgr_box with 3, 'Триває збереження даних ','...'
+do dgr_mov
+SELECT(thisform.filef)
+_coden = thisform.coden
+_codefirm = __FFCodeFirm
+_typezv = 1
+_yy = thisform._yy1_ 
+_mm = thisform._mm1_ 
+_daten = thisform.datazvit
+
+LOCAL filef 
+
+_xmldata1 = ""
+filef = fpathtemp+'f'+SUBSTR(SYS(2015),4,10)+'.vts'
+thisform.pf.page1.f1_1.writeEx(filef,12)
+_xmldata1 = FILETOSTR(filef)
+ERASE (filef)
+
+_xmldata2 = ""
+	filef = fpathtemp+'f'+SUBSTR(SYS(2015),4,10)+'.vts'
+	thisform.pf.page5.f1_55.writeEx(filef,12)
+	_xmldata2 = FILETOSTR(filef)
+	ERASE (filef)
+
+_xmldata3 = ""
+*	filef = fpathtemp+'f'+SUBSTR(SYS(2015),4,10)+'.vts'
+*	thisform.pf.Page3.F1_3.writeEx(filef,12)
+*	_xmldata3 = FILETOSTR(filef)
+*	ERASE (filef)
+
+_xmldata4 = ""
+*	filef = fpathtemp+'f'+SUBSTR(SYS(2015),4,10)+'.vts'
+*	thisform.pf.Page4.F1_4.writeEx(filef,12)
+*	_xmldata4 = FILETOSTR(filef)
+*	ERASE (filef)
+	
+*_xmldata4 = ""
+_xmldata5 = ""
+_xmlver1 = ""
+_xmlver2 = ""
+_xmlver3 = ""
+_xmlver4 = ""
+_xmlver5 = ""
+
+lnresult=prSQLEXEC(@hconnect, 'exec Buh.dbo.us_BuhZvit_edit '+all2sqlstr(_coden)+','+all2sqlstr(_codefirm)+','+all2sqlstr(_typezv)+','+all2sqlstr(_daten)+','+all2sqlstr(_yy)+','+all2sqlstr(_mm)+',?_xmldata1,?_xmldata2,?_xmldata3,?_xmldata4,?_xmldata5,?_xmlver1,?_xmlver2,?_xmlver3,?_xmlver4,?_xmlver5','filef2_tmp')
+
+if lnresult=-1
+	do dgr_end
+	return .f.
+endif
+
+do dgr_mov
+if !used('filef2_tmp')
+	MESSAGEBOX("Сервер у збереженні відмовив!"+chr(13)+;
+		"Поновіть дані з сервера!",0 + 16 + 0,'Сервер')
+	do dgr_end
+	return .f.
+endif
+
+select filef2_tmp
+go top
+if eof()
+	select filef2_tmp
+	use
+	MESSAGEBOX("Дані вже знищили!"+chr(13)+;
+		"Поновіть дані з сервера!",0 + 16 + 0,'Сервер')
+	do dgr_end
+	return .f.
+endif
+
+SELECT(thisform.filef)
+IF thisform.coden = 0
+	APPEND BLANK 
+ENDIF 
+
+select filef2_tmp
+SCATTER MEMVAR 
+_xmldata1 = xmldata1
+_xmldata2 = xmldata2
+_xmldata3 = xmldata3
+_xmldata4 = xmldata4
+_xmldata5 = xmldata5
+
+SELECT(thisform.filef)
+GATHER MEMVAR
+replace xmldata1 WITH _xmldata1,;
+		xmldata2 WITH _xmldata2,;
+		xmldata3 WITH _xmldata3,;
+		xmldata4 WITH _xmldata4,;
+		xmldata5 WITH _xmldata5
+
+select filef2_tmp
+USE
+do dgr_end
+RELEASE _xmldata1,_xmldata2,_xmldata3,_xmldata4,_xmldata5,_xmlver1,_xmlver2,_xmlver3,_xmlver4,_xmlver5
+
+THISFORM.RELEASE()
+ENDPROC
+
+===== Writes F1Find.Row col 43/48 =====
+--- @ 3882 ---
+1)
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,29) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),2,1)
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,31) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),3,1)
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,33) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),4,1)
+
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,43) = SUBSTR(PADL(ALLTRIM(STR(thisform._mm1_)),2,"0"),1,1)
+	thisform.PF.Page1.F1_1.TextRC(F1Find.Row,45) = SUBSTR(PADL(ALLTRIM(STR(
+--- @ 11226 ---
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,29) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),2,1)
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,31) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),3,1)
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,33) = SUBSTR(ALLTRIM(STR(thisform._yy1_)),4,1)
+
+	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) = SUBSTR(PADL(ALLTRIM(STR(thisform._mm1_)),2,"0"),1,2)
+*	thisform.PF.Page5.F1_55.TextRC(F1Find.Row,45) = SUBSTR(PADL(ALLTRIM(ST
+--- @ 30175 ---
+.PF.Page5.F1_55.SetRowHidden(F1Find.Row,F1Find.Row,.t.)
+	*ENDIF
+
+	F1Find = thisform.PF.Page5.F1_55.DefineSearch("T21END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) = ALLTRIM(STR(m.lnSunR5,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.
+--- @ 30255 ---
+isform.PF.Page5.F1_55.DefineSearch("T21END",1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,38) = ALLTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) = ALLTRIM(STR(m.lnSunR5,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform
+--- @ 30421 ---
+LTRIM(STR(m.lnSunR4,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) = ALLTRIM(STR(m.lnSunR5,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) = ALLTRIM(STR(m.lnSunR7,18,2))
+
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,38) = ALLTRIM(STR(ttt2.sumall,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,43) = ALLTRIM(STR(ttt2.sumallpdv,18,2))
+		thisform.PF.Page5.F1_55.TextRC(F1Find.Row+1,52) = ALLTRIM(m.lcSs)
+
+		FOR i = 2 TO 3
+
+
+===== STRTRAN(_xml =====
+count=0
+
+########## VERDICT ##########
+1) T22RXXXXG8: current xmlpart2 T22 path does NOT emit detail G8. Active G8 only in xmlpart (LL*) and xmlpart2 when prkasmetod>0 (T21).
+2) Command5.Click = Excel PUTFILE+F1.write only. XML via method: page2toxml
+3) T22END calc sets 31/38/46 only (lnSunR4/5/7). NOT 43/48. loaddata does not fill T22END sums.
+4) No empty-tag STRTRAN strip for R022G7/G8.
+5) xmlpart2 only in SCT (202102+202304); not in prg/fxp/vcx; SCX has no methods.
+VERDICT: Command5 without recalc never runs xmlpart2. T22END 43/48 usually empty. R022G7/G8 absent => Kushnir block not executed at runtime (wrong button and/or unrecompiled methods), not because of empty-tag stripping.
+

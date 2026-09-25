@@ -1,0 +1,261 @@
+=== EXTRACT from zvit_buh29_1_edit202304.SCT (FileShare.ReadWrite) ===
+Source: d:\BuhnetAll\SYSAPPPRJ\Zvit_buh1C\zvit_buh29_1_edit202304.SCT
+File size: 408285  LastWrite: 15.06.2026 10:52
+Compared with: zvit_buh29_1_edit202102.SCT (has June 2026 fix)
+
+========== 1) FULL PROCEDURE xmlpart2 (edit202304) ==========
+PROCEDURE xmlpart2
+LPARAMETERS key1,key2
+LOCAL key1end,_xml,CRLF
+LOCAL x1,x2,x3,x4,prkasmetod
+
+CRLF = Chr(13)+Chr(10) 
+m.key1end=key1+'END'
+_xml=''
+IF key1='T21'
+		x1=31
+		x2=38
+		x3=43
+		x4=48
+		prkasmetod=26
+ELSE
+		x1=26
+		x2=31
+		x3=38
+		x4=46
+		prkasmetod=0
+ENDIF 
+
+F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+	IF (F1Find.FindNext())
+		IF thisform.PF.Page5.F1_55.RowHidden(F1Find.Row) OR VAL(thisform.PF.Page5.F1_55.TextRC(F1Find.Row,1)) = 1
+			T1Start = F1Find.Row + IIF(thisform.PF.Page5.F1_55.RowHidden(F1Find.Row), 1, 0)
+			F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+			IF (F1Find.FindNext())
+				FOR i = T1Start TO (F1Find.Row - 1)
+				IF LEN(ALLTRIM(thisform.PF.Page5.F1_55.TextRC(i,3)))=0
+						IF i=T1Start
+						_xml = _xml + '<T'+key2+'RXXXXG2 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod >0
+						_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						
+						
+						ENDIF 
+				EXIT
+				
+				ENDIF 
+				_xml = _xml + '<T'+key2+'RXXXXG2 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,3) + '</T'+key2+'RXXXXG2>'+ CRLF
+				IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),1,2)+'</T'+key2+'RXXXXG31>'+  CRLF
+						*	_xml = _xml + '<T'+key2+'RXXXXG32 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + '20'+SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,2)+'</T'+key2+'RXXXXG32>'+  CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,4)+'</T'+key2+'RXXXXG32>'+  CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+ CRLF
+							*_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+ CRLF
+
+							m.lcG5 = ALLTRIM(Thisform.PF.Page5.F1_55.TextRC(i,31))
+							IF m.lcG5 == ""
+								_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'"/>'+ CRLF
+							ELSE
+								_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + "1" + '</T'+key2+'RXXXXG5>'+ CRLF
+							ENDIF
+							
+							_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,38) + '</T'+key2+'RXXXXG6>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG10 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' +thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG10>'+ CRLF							
+					
+				ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),1,2)+'</T'+key2+'RXXXXG311>'+  CRLF
+						*	_xml = _xml + '<T'+key2+'RXXXXG312 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' +'20'+ SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,2)+'</T'+key2+'RXXXXG312>'+  CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + SUBSTR(thisform.PF.Page5.F1_55.TextRC(i,19),4,4)+'</T'+key2+'RXXXXG312>'+  CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,26)+'</T'+key2+'RXXXXG32>'+  CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG4 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,31) + '</T'+key2+'RXXXXG4>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,38) + '</T'+key2+'RXXXXG5>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,46) + '</T'+key2+'RXXXXG6>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,38) + '</T'+key2+'RXXXXG8>'+ CRLF
+							
+						
+				ENDIF 
+					
+					*_xml = _xml + '<T'+key2+'RXXXXG4 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x1) + '</T'+key2+'RXXXXG4>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">'
+					*_xml = _xml + '<T'+key2+'RXXXXG5 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x2) + '</T'+key2+'RXXXXG5>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG6 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,x3) + '</T'+key2+'RXXXXG6>'+ CRLF
+					*IF prkasmetod >0
+					*_xml = _xml + '<T'+key2+'RXXXXG7 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,43) + '</T'+key2+'RXXXXG7>'+ CRLF
+					*_xml = _xml + '<T'+key2+'RXXXXG8 ROWNUM="'+thisform.PF.Page5.F1_55.TextRC(i,1)+'">' + thisform.PF.Page5.F1_55.TextRC(i,48) + '</T'+key2+'RXXXXG8>'+ CRLF
+					*ENDIF 
+				ENDFOR 
+			ENDIF 
+		ELSE	
+						IF prkasmetod>0 && Таблиця 2.1, де є колонка касовий метод 
+							_xml = _xml + '<T'+key2+'RXXXXG31 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ELSE  && таблиця 2.2 
+							_xml = _xml + '<T'+key2+'RXXXXG311 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG312 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+							_xml = _xml + '<T'+key2+'RXXXXG32 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+						_xml = _xml + '<T'+key2+'RXXXXG4 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG5 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG6 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						IF prkasmetod >0
+						_xml = _xml + '<T'+key2+'RXXXXG7 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						_xml = _xml + '<T'+key2+'RXXXXG8 xsi:nil="true" ROWNUM="1"/>'+ CRLF
+						ENDIF 
+		ENDIF		
+		
+		F1Find = thisform.PF.Page5.F1_55.DefineSearch(key1end,1,1,49,thisform.PF.Page5.F1_55.maxRow,52,0)
+		F1Find.FindNext()
+		bukva1='G'+STR(4+IIF(prkasmetod>0,2,0),1)
+		bukva2='G'+STR(5+IIF(prkasmetod>0,2,0),1)
+		bukva3='G'+STR(6+IIF(prkasmetod>0,2,0),1)
+		x1=IIF(prkasmetod>0,38,31)
+		x2=IIF(prkasmetod>0,43,38)
+		x3=IIF(prkasmetod>0,48,46)
+	
+		_xml = _xml + '<R0'+key2+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x1) + '</R0'+key2+bukva1+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x2) + '</R0'+key2+bukva2+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva3+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x3) + '</R0'+key2+bukva3+'>'+ CRLF
+		
+		FOR I=1 TO 3
+			_xml = _xml + '<R0'+key2+STR(I,1)+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x1) + '</R0'+key2+STR(I,1)+bukva1+'>'+ CRLF
+			_xml = _xml + '<R0'+key2+STR(I,1)+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x2) + '</R0'+key2+STR(I,1)+bukva2+'>'+ CRLF
+			IF i=1
+				_xml = _xml + '<R0'+key2+STR(I,1)+bukva3+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x3) + '</R0'+key2+STR(I,1)+bukva3+'>'+ CRLF
+			ENDIF 
+		NEXT
+		
+*
+ENDIF
+RETURN _xml 
+
+ENDPROC
+
+
+========== 2) Comments search in edit202304 ==========
+Кушнір: NOT FOUND
+Додано ШІ: NOT FOUND
+12/06/2026: NOT FOUND
+Kushnir (latin): NOT FOUND
+
+In edit202102 these DO exist inside xmlpart2 summary section:
+  *Додано ШІ(з Кушнір) 12/06/2026
+  *Виправлено(відкоментовуно) ШІ(з Кушнір) 12/06/2026
+(byte search confirmed: Кушнір, Додано ШІ, 12/06/2026 present in edit202102 only)
+
+========== 3) T22 detail: T22RXXXXG7 / G8 ==========
+When key1<>'T21' => prkasmetod=0 (table 2.2 / T22):
+  T22RXXXXG7: NOT written (only written when prkasmetod>0 / T21)
+  T22RXXXXG8: YES written from grid column 38
+  Other T22 detail mappings:
+    G311 <- col 19 (MM part of date)
+    G312 <- col 19 (YYYY part)
+    G32  <- col 26
+    G4   <- col 31
+    G5   <- col 38
+    G6   <- col 46
+    G8   <- col 38  (duplicate of G5 source)
+
+========== 4) T22END summary XML: R022G4/G5/G6/G7/G8 ==========
+For T22 (prkasmetod=0):
+  bukva1=G4, bukva2=G5, bukva3=G6
+  x1=31, x2=38, x3=46
+  R022G4 <- TextRC(T22END row, 31)
+  R022G5 <- TextRC(T22END row, 38)
+  R022G6 <- TextRC(T22END row, 46)
+  R022G7 <- NOT emitted in edit202304
+  R022G8 <- NOT emitted in edit202304  << empty MEDOC cell root cause
+
+========== 5) T22END calculation: lnSunR* column targets ==========
+Detail rows (SCAN ttt1):
+  col 31 = sumall      ; lnSunR4 += sumall
+  col 38 = sumallpdv   ; lnSunR5 += sumallpdv
+  col 46 = sumallpdv7  ; lnSunR7 += sumallpdv7
+T22END row write-back:
+  col 31 = lnSunR4
+  col 38 = lnSunR5
+  col 46 = lnSunR7
+Note: T22 does NOT fill cols 43 or 48 (those are T21 layout).
+
+========== 6) Command5 vs Command6 ==========
+Command5 Click: Excel export via PUTFILE(...XLS) + F1.write — does NOT write c:\opz\xml
+Command6 Click: calls page1toxml/page2toxml/page3toxml/page4toxml
+  page1toxml / page2toxml / page3toxml: STRTOFILE(_xml, 'c:\opz\xml\'+_filename)
+VERDICT: Command6 writes XML to c:\opz\xml (via pageNtoxml). Command5 writes XLS.
+
+========== VERDICT: does edit202304 have the fix? ==========
+NO. User edited edit202102 (June 2026 / Кушнір / Додано ШІ block exists there).
+Runtime opens edit202304, which lacks that block => R022G8 never written => empty MEDOC summary cell.
+
+Exact code change needed in edit202304 PROCEDURE xmlpart2, after the three
+R0+key2+bukva1/2/3 summary lines and BEFORE the FOR I=1 TO 3 loop.
+Port from edit202102:
+
+bukva1='G'+STR(4+IIF(prkasmetod>0,2,0),1)
+		bukva2='G'+STR(5+IIF(prkasmetod>0,2,0),1)
+		bukva3='G'+STR(6+IIF(prkasmetod>0,2,0),1)
+		x1=IIF(prkasmetod>0,38,31)
+		x2=IIF(prkasmetod>0,43,38)
+		x3=IIF(prkasmetod>0,48,46)
+	
+		_xml = _xml + '<R0'+key2+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x1) + '</R0'+key2+bukva1+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x2) + '</R0'+key2+bukva2+'>'+ CRLF
+		_xml = _xml + '<R0'+key2+bukva3+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,x3) + '</R0'+key2+bukva3+'>'+ CRLF
+		
+		*Додано ШІ(А Кушнір) 12/06/2026
+				IF prkasmetod=0
+				    _xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) + '</R0'+key2+'G7>'+ CRLF
+				    _xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+				ENDIF
+				
+				*Змінено(закоментовано) ШІ(А Кушнір) 12/06/2026
+				FOR I=1 TO 3
+					_xml = _xml + '<R0'+key2+STR(I,1)+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x1) + '</R0'+key2+STR(I,1)+bukva1+'>'+ CRLF
+					_xml = _xml + '<R0'+key2+STR(I,1)+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x2) + '</R0'+key2+STR(I,1)+bukva2+'>'+ CRLF
+					*IF i=1
+					_xml = _xml + '<R0'+key2+STR(I,1)+bukva3+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x3) + '</R0'+key2+STR(I,1)+bukva3+'>'+ CRLF
+					*ENDIF 
+				NEXT
+		
+		
+*!*			FOR I=1 TO 3
+*!*				_xml = _xml + '<R0'+key2+STR(I,1)+bukva1+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x1) + '</R0'+key2+STR(I,1)+bukva1+'>'+ CRLF
+*!*				_xml = _xml + '<R0'+key2+STR(I,1)+bukva2+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x2) + '</R0'+key2+STR(I,1)+bukva2+'>'+ CRLF
+*!*				IF i=1
+*!*					_xml = _xml + '<R0'+key2+STR(I,1)+bukva3+'>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row+I,x3) + '</R0'+key2+STR(I,1)+bukva3+'>'+ CRLF
+*!*				ENDIF 
+*!*			NEXT
+		
+*
+ENDIF
+RETURN _xml 
+
+ENDPROC
+
+
+Minimal insert (T22 only) — same as edit202102:
+  *Додано ШІ(з Кушнір) 12/06/2026
+  IF prkasmetod=0
+      _xml = _xml + '<R0'+key2+'G7>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,43) + '</R0'+key2+'G7>'+ CRLF
+      _xml = _xml + '<R0'+key2+'G8>' + thisform.PF.Page5.F1_55.TextRC(F1Find.Row,48) + '</R0'+key2+'G8>'+ CRLF
+  ENDIF
+
+CAUTION on columns 43/48:
+  T22END lnSunR* are stored in 31/38/46, not 43/48.
+  Detail T22RXXXXG8 uses col 38. If MEDOC still shows empty values after porting,
+  map G8 from col 38 (and/or confirm schema expects which amount for R022G8).
+  edit202102 also always emits bukva3 for I=1..3 (IF i=1 commented out); optional.

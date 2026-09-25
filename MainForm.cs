@@ -30,7 +30,7 @@ namespace RozetkaUI
         {
             _cbOrderType.Items.AddRange(new string[] { "Всі замовлення", "В обробці", "Успішно завершені", "Нові", "Доставляються", "Неуспішно завершені" });
             _cbOrderType.SelectedIndex = 0;
-            _cbPays.Items.AddRange(new string[] { "Усі онлайн-оплати", "Оплата карткою (RozetkaPay)", "GooglePay", "ApplePay" });
+            _cbPays.Items.AddRange(new string[] { "Усі онлайн-оплати", "Оплата карткою (RozetkaPay)", "GooglePay", "ApplePay", "Оплатити частинами" });
             _cbPays.SelectedIndex = 0;
             string[] statuses = new string[52];
             for (var i = 0; i < 52; i++)
@@ -198,16 +198,19 @@ namespace RozetkaUI
             switch (_cbPays.SelectedIndex)
             {
                 case 0:
-                    idPay = "4524,5307,5405";
+                    idPay = "4524,5307,5405,6809,6812,6815,7244,7339";
                     break;
                 case 1:
-                    idPay = "4524";
+                    idPay = "4524,6815";
                     break;
                 case 2:
-                    idPay = "5307";
+                    idPay = "5307,6809";
                     break;
                 case 3:
-                    idPay = "5405";
+                    idPay = "5405,6812";
+                    break;
+                case 4:
+                    idPay = "7244,7339";
                     break;
                 default:
                     return;
@@ -228,7 +231,8 @@ namespace RozetkaUI
 
         private void button6_Click(object sender, EventArgs e)
         {
-            ApiManager.GetOrdersForFiskalXml(out string result);
+            ApiManager.GetOrderStatusToSQL(883740562);
+            //MessageBox.Show(result);
             //var pp = new RoutePoint()
             //{
             //    Point = "sd",

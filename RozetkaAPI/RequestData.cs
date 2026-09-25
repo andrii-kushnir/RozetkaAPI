@@ -31,15 +31,28 @@ namespace RozetkaAPI
             return result;
         }
 
-        public static string SendPut(string url, string token, string json, out string error)
+        public static string SendPut(string url, string token, string json, out string error, int? timeout = null)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "PUT";
+            if (timeout.HasValue)
+            {
+                request.Timeout = timeout.Value;
+                request.ReadWriteTimeout = timeout.Value;
+            }
             request.PreAuthenticate = true;
             if (token != null) request.Headers.Add("Authorization", $"Bearer {token}");
             request.ContentType = "application/json";
-            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                streamWriter.Write(json);
+            try
+            {
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                    streamWriter.Write(json);
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return null;
+            }
 
             HttpWebResponse response;
             try
@@ -54,6 +67,49 @@ namespace RozetkaAPI
             var result = ParseResponse(response, out error);
             response.Close();
             return result;
+        }
+
+        public static void SendPutNoWait(string url, string token, string json)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "PUT";
+            request.Timeout = 60000;
+            request.ReadWriteTimeout = 60000;
+            request.PreAuthenticate = true;
+            if (token != null) request.Headers.Add("Authorization", $"Bearer {token}");
+            request.ContentType = "application/json";
+            request.KeepAlive = false;
+            request.ServicePoint.Expect100Continue = false;
+            byte[] body = Encoding.UTF8.GetBytes(json ?? "");
+            request.BeginGetRequestStream(ar =>
+            {
+                try
+                {
+                    using (var stream = request.EndGetRequestStream(ar))
+                        stream.Write(body, 0, body.Length);
+                    request.BeginGetResponse(ar2 =>
+                    {
+                        try
+                        {
+                            using (var response = (HttpWebResponse)request.EndGetResponse(ar2))
+                            using (var s = response.GetResponseStream())
+                            {
+                                if (s != null)
+                                {
+                                    var buffer = new byte[1024];
+                                    while (s.Read(buffer, 0, buffer.Length) > 0) { }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }, null);
+                }
+                catch
+                {
+                }
+            }, null);
         }
 
         public static string FormDataRequest(string url, string token, Dictionary<string, string> postBody, FileInfo fileToUpload, string fileMimeType, string fileFormKey, out string error)
